@@ -1,0 +1,32 @@
+<span class="xman-speeds md-button-group" md-theme="success-warning">
+<md-button 
+  ng-disabled="xmanSpeedMach.isDisabled()"
+  class="md-raised"
+  ng-class="xmanSpeedMach.getMcsButtonClass()"
+  ng-click="xmanSpeedMach.toggleMcs()"
+>
+  <md-icon
+    md-svg-icon="airplane"
+  >
+</md-button>
+<md-button 
+  ng-class="xmanSpeedMach.getButtonClassForSpeed(s)"
+  class="md-raised"
+  ng-disabled="xmanSpeedMach.isDisabled()"
+  ng-repeat="s in xmanSpeedMach.possibleSpeeds"
+  ng-click="xmanSpeedMach.setSpeed(s)"
+>
+  {{s}}
+</md-button>
+<md-button 
+  aria-label="undo"
+  class="md-raised"
+  ng-class="xmanSpeedMach.getUndoButtonClass()"
+  ng-disabled="xmanSpeedMach.isUndoButtonDisabled()"
+  ng-click="xmanSpeedMach.undoSpeed()"
+>
+  <md-icon
+    md-svg-icon="undo"
+  >
+</md-button>
+</span>

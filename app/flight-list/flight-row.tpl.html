@@ -1,0 +1,10 @@
+<md-content layout="column" class="xman-row">
+  <div layout="row" layout-padding layout-align="start center">
+    <div flex="20" layout="column" class="callsign">
+      <span class="md-title">{{xmanFlightRow.flight.arcid}}</span>
+    </div>
+    <div flex="10" class="delay"><fme-xman-delay flight="xmanFlightRow.flight" /></div>
+    <div flex="45" class="speeds"><fme-xman-speed-mach flight="xmanFlightRow.flight" /></div>
+    <div flex="25" class="applied"><fme-xman-applied-by flight="xmanFlightRow.flight" /></div>
+  </div>
+</md-content>
