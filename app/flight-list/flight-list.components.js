@@ -110,7 +110,7 @@ function xmanSpeedMachController(mySector) {
   };
 
   xmanSpeedMach.getButtonClassForSpeed = function(s) {
-    
+
     if(_.get(xmanSpeedMach.flight, 'currentStatus.machReduction') === s) {
       return 'md-primary';
     }
@@ -179,10 +179,10 @@ function xmanDelayController(_) {
       '#FF5252'
     ];
 
-    var index = delay/maxDelay * (gradient.length-1);
-    console.log(index);
+    var index = Math.floor(delay/maxDelay * (gradient.length-1));
+    index = index > (gradient.length - 1) ? gradient.length-1 : index;
 
-    return {color: gradient[0]};
+    return {color: gradient[index]};
   };
 }
 
