@@ -95,31 +95,68 @@ function xmanSpeedMachController(mySector) {
     return xmanSpeedMach.proposal.machReduction;
   };
 
+  // True if action needed,
+  // False if everything is done
+  function isActionComplete(flight) {
+    var minCleanSpeed = _.get(flight, 'currentStatus.minimumCleanSpeed');
+    var currentMach = _.get(flight, 'currentStatus.machReduction') || -1;
+    var proposedMach = _.get(flight, 'proposal.machReduction');
+
+    if(_.get(flight, 'currentStatus.minimumCleanSpeed') === true) {
+      return true;
+    }
+    if(currentMach >= proposedMach) {
+      return true;
+    }
+    return false;
+  }
+
   xmanSpeedMach.possibleSpeeds = [0, 1, 2, 3, 4];
 
+  var possibleClasses = {
+    'md-primary': false,
+    'md-raised': true,
+    'md-warn': false
+  };
+
   xmanSpeedMach.getMcsButtonClass = function() {
+    var ret = Object.assign({}, possibleClasses);
+
     if(_.get(xmanSpeedMach.flight, 'currentStatus.minimumCleanSpeed') === true) {
-      return 'md-primary';
+      Object.assign(ret, {'md-primary': true});
     }
 
-    return '';
+    if(isActionComplete(xmanSpeedMach.flight)) {
+      Object.assign(ret, {'md-raised': false});
+    }
+
+
+    return ret;
   };
 
   xmanSpeedMach.toggleMcs = function() {
     xmanSpeedMach.flight.toggleMcs(mySector.get().sectors);
   };
 
+
+
   xmanSpeedMach.getButtonClassForSpeed = function(s) {
+    var ret = Object.assign({}, possibleClasses);
 
-    if(_.get(xmanSpeedMach.flight, 'currentStatus.machReduction') === s) {
-      return 'md-primary';
+    var currentMach = _.get(xmanSpeedMach.flight, 'currentStatus.machReduction');
+    var proposedMach = _.get(xmanSpeedMach.flight, 'proposal.machReduction');
+
+    if(currentMach === s) {
+      Object.assign(ret, {'md-primary': true});
+    } else if(proposedMach === s) {
+      Object.assign(ret, {'md-warn': true});
     }
 
-    if(xmanSpeedMach.flight.proposal.machReduction === s) {
-      return 'md-warn';
+    if(currentMach !== s && isActionComplete(xmanSpeedMach.flight)) {
+      Object.assign(ret, {'md-raised': false});
     }
 
-    return '';
+    return ret;
   };
 
   xmanSpeedMach.getUndoButtonClass = function() {
