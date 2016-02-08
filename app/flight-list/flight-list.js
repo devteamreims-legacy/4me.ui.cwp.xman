@@ -10,7 +10,8 @@
  * Meta module to include flight list components/services
  */
 angular.module('4me.ui.cwp.xman.flight-list', [
-  '4me.ui.cwp.xman.flight-list.components'
+  '4me.ui.cwp.xman.flight-list.components',
+  '4me.ui.cwp.xman.flight-list.control.components'
 ]);
 
 }());
