@@ -32,7 +32,7 @@ var stubData = [
   },
   cop: 'ABNUR',
   estimatedTimeOverCop: Date.now() + 1000*60*12,
-  delay: 0,
+  delay: 2,
   proposal: {
     machReduction: 2,
     speed: null,
@@ -71,7 +71,7 @@ var stubData = [
   destination: 'EGLL',
   cop: 'ABNUR',
   estimatedTimeOverCop: Date.now() + 1000*60*12,
-  delay: 26,
+  delay: 48,
   position: {
     currentFlightLevel: 380,
     plannedFlightLevel: 380,
@@ -86,8 +86,8 @@ var stubData = [
   currentStatus: {}
 }];
 
-xmanFlights.$inject = ['_', '$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout'];
-function xmanFlights(_, $http, $q, api, errors, $timeout) {
+xmanFlights.$inject = ['_', '$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope'];
+function xmanFlights(_, $http, $q, api, errors, $timeout, $rootScope) {
   var service = {};
 
   var refreshPromise = null;
@@ -95,10 +95,22 @@ function xmanFlights(_, $http, $q, api, errors, $timeout) {
   var bootstrapped = false;
   var isLoading = true;
 
+  var queryParameters = {
+    sectors: [],
+    verticalFilter: true,
+    destinationFilter: null
+  };
+
+  $rootScope.$on('fme:new-sectors', function() {
+    console.log('Sectors changed for XMAN !!');
+  })
+
   service.bootstrap = function() {
     var self = this;
     if(!bootstrapped) {
       refreshPromise = $timeout(function() {
+        console.log('Bootstrapping data with these options :');
+        console.log(queryParameters);
         return $q.resolve(stubData);
       }, 1000)
       .then(function(data) {
@@ -125,6 +137,10 @@ function xmanFlights(_, $http, $q, api, errors, $timeout) {
 
   service.isLoading = function() {
     return !!isLoading;
+  };
+
+  service.setVerticalFilter = function(verticalFilter) {
+    queryParameters.verticalFilter = !!verticalFilter;
   };
 
 
