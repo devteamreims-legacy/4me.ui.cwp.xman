@@ -1,24 +1,16 @@
 <div layout="row" layout-padding class="xman-row-title">
-  <div flex="20" class="callsign">Callsign</div>
-  <div flex="10" class="delay">Delay</div>
-  <div flex="45" class="speeds">Speed</div>
-  <div flex="25" class="applied">Applied</div>
+  <div flex="10" class="callsign">Callsign</div>
+  <div flex="5" class="delay" layout="row" layout-align="center">Delay</div>
+  <div flex="5" class="flight-level" layout="row" layout-align="center">FL</div>
+  <div flex="20" class="cop" layout="row" layout-align="center">COP</div>
+  <div flex="35" class="speeds" layout="row" layout-align="center">Speed</div>
+  <div flex="20" class="applied" layout="row" layout-align="center">Applied</div>
 </div>
 <md-progress-linear ng-if="xmanFlightList.isLoading()" md-mode="indeterminate"></md-progress-linear>
 <md-divider></md-divider>
+<div layout="column" layout-fill>
+<fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight" flex></fme-xman-flight-row>
 <fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight"></fme-xman-flight-row>
-
-<md-content layout="column" class="xman-row" ng-class="getRowClass(flight)" ng-repeat-start="flight in x.xmanData track by flight.flightId">
-  <div layout="row" layout-padding layout-align="start center">
-    <div flex="20" layout="column" class="callsign">
-      <md-tooltip md-direction="bottom">Optimal : 2 minutes 25 seconds</md-tooltip>
-      <span class="md-title">{{flight.callsign}}</span>
-    </div>
-    <div flex="10" class="delay"><xman-delay flight="flight" /></div>
-    <div flex="45" class="speeds"><xman-speed flight="flight" /></div>
-    <div flex="25" class="applied"><xman-applied-by flight="flight" /></div>
-  </div>
-  <!-- <md-progress-linear flex ng-if="!flight.applied.when && (flight.speed !== '0')" class="md-primary" md-mode="determinate" ng-value="80">
-  </md-progress-linear> -->
-</md-content>
-<md-divider ng-repeat-end></md-divider>
+<fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight"></fme-xman-flight-row>
+<fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight"></fme-xman-flight-row>
+</div>
