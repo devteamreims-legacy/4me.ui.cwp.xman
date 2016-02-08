@@ -22,7 +22,7 @@ function xmanFilterService(_) {
 
   var filter = {
     destination: [],
-    flightLevel: [380, 360],
+    flightLevel: [380],
     cop: []
   };
 
@@ -38,16 +38,15 @@ function xmanFilterService(_) {
 
   function isDestinationHighlighted(destinations, flight) {
     let currentDestination = _.get(flight, 'destination');
-    return _.indexOf(destinations, currentDestination) !== -1;
+    return _.includes(destinations, currentDestination);
   }
 
   function isFlightLevelHighlighted(flightLevel, flight) {
     // Accepts an array : [360, 380]
     // Or an object : {minFlightLevel: 360, maxFlightLevel: 380}
-
     var currentFlightLevel = parseInt(_.get(flight, 'position.currentFlightLevel'));
     if(_.isArray(flightLevel)) {
-      return flightLevel.map(parseInt).indexOf(currentFlightLevel) !== -1;
+      return _.includes(flightLevel.map(parseInt), currentFlightLevel);
     }
     return false;
   }
