@@ -151,7 +151,7 @@ function xmanAppliedByController(_) {
   };
 
   xmanAppliedBy.getWhen = function() {
-    return _.get(xmanAppliedBy.flight, 'currentStatus.when') || 0;
+    return _.get(xmanAppliedBy.flight, 'currentStatus.when') || null;
   };
 
   xmanAppliedBy.getSectors = function() {
