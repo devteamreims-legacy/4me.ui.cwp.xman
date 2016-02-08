@@ -3,6 +3,7 @@
   ng-disabled="xmanSpeedMach.isDisabled()"
   ng-class="xmanSpeedMach.getMcsButtonClass()"
   ng-click="xmanSpeedMach.toggleMcs()"
+  flex="10"
 >
   <md-icon
     md-svg-icon="airplane"
@@ -13,6 +14,7 @@
   ng-disabled="xmanSpeedMach.isDisabled()"
   ng-repeat="s in xmanSpeedMach.possibleSpeeds"
   ng-click="xmanSpeedMach.setSpeed(s)"
+  flex="10"
 >
   {{s}}
 </md-button>
@@ -21,6 +23,7 @@
   ng-class="xmanSpeedMach.getUndoButtonClass()"
   ng-disabled="xmanSpeedMach.isUndoButtonDisabled()"
   ng-click="xmanSpeedMach.undoSpeed()"
+  flex="10"
 >
   <md-icon
     md-svg-icon="undo"
