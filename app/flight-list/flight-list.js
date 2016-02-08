@@ -11,7 +11,8 @@
  */
 angular.module('4me.ui.cwp.xman.flight-list', [
   '4me.ui.cwp.xman.flight-list.components',
-  '4me.ui.cwp.xman.flight-list.control.components'
+  '4me.ui.cwp.xman.flight-list.control.components',
+  '4me.ui.cwp.xman.flight-list.services'
 ]);
 
 }());

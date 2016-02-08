@@ -96,20 +96,18 @@ function xmanFlights(_, $http, $q, api, errors, $timeout, $rootScope) {
   var isLoading = true;
 
   var queryParameters = {
-    sectors: [],
-    verticalFilter: true,
-    destinationFilter: null
+    sectors: []
   };
 
   $rootScope.$on('fme:new-sectors', function() {
     console.log('Sectors changed for XMAN !!');
-  })
+  });
 
   service.bootstrap = function() {
     var self = this;
     if(!bootstrapped) {
       refreshPromise = $timeout(function() {
-        console.log('Bootstrapping data with these options :');
+        console.log('Bootstrapping XMAN data with these options :');
         console.log(queryParameters);
         return $q.resolve(stubData);
       }, 1000)

@@ -1,7 +1,9 @@
+@import 'common.materialcolors';
+
 .xman-row {
   padding: 0;
 
   &.highlight {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba($red-A100, 0.4);
   }
 }

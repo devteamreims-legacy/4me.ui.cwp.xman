@@ -1,5 +1,5 @@
 (function() {
-
+'use strict';
 /**
  * @ngdoc overview
  * @name 4me.ui.spvr.mapping.ctrlroom.components
@@ -9,7 +9,8 @@
  **/
 var xmanFlightListComponents = angular.module('4me.ui.cwp.xman.flight-list.components', [
   '4me.core.lodash',
-  '4me.ui.cwp.xman.services'
+  '4me.ui.cwp.xman.services',
+  '4me.ui.cwp.xman.flight-list.services'
 ]);
 
 xmanFlightListComponents.component('fmeXmanFlightList', {
@@ -73,12 +74,18 @@ function xmanFlightListController(xmanFlights) {
 
 }
 
-xmanFlightRowController.$inject = ['_'];
-function xmanFlightRowController(_) {
+xmanFlightRowController.$inject = ['_', 'xmanFilterService'];
+function xmanFlightRowController(_, xmanFilterService) {
   var xmanFlightRow = this;
 
-  xmanFlightRow.getArcid = function() {
-    return flight.arcid;
+  xmanFlightRow.isHighlighted = function() {
+    return xmanFilterService.isHighlighted(xmanFlightRow.flight);
+  };
+
+  xmanFlightRow.getClasses = function() {
+    return {
+      highlight: xmanFilterService.isHighlighted(xmanFlightRow.flight)
+    };
   };
 
 }
