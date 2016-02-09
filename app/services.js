@@ -23,7 +23,7 @@ var stubData = [
 {
   flightId: 12345,
   arcid: 'BAW164',
-  destination: 'EGLL',
+  destination: 'LSZH',
   position: {
     currentFlightLevel: 283,
     plannedFlightLevel: 360,
@@ -96,7 +96,8 @@ function xmanFlights(_, $http, $q, api, errors, $timeout, $rootScope) {
   var isLoading = true;
 
   var queryParameters = {
-    sectors: []
+    sectors: [],
+    verticalFilter: true
   };
 
   $rootScope.$on('fme:new-sectors', function() {
@@ -106,31 +107,43 @@ function xmanFlights(_, $http, $q, api, errors, $timeout, $rootScope) {
   service.bootstrap = function() {
     var self = this;
     if(!bootstrapped) {
-      refreshPromise = $timeout(function() {
-        console.log('Bootstrapping XMAN data with these options :');
-        console.log(queryParameters);
-        return $q.resolve(stubData);
-      }, 1000)
-      .then(function(data) {
-        // Process data here
-        _.map(data, function(f) {
-          flights.push(new XmanFlight(f));
-        });
-        refreshPromise = null;
-        bootstrapped = true;
-        isLoading = false;
-        return flights;
-      });
-      return refreshPromise;
+      return self.refresh();
     }
     return $q.resolve(flights);
   };
 
   service.getAll = function() {
     var self = this;
-    return self.bootstrap().then(function() {
+    return self.bootstrap();
+  };
+
+  service.refresh = () => {
+    if(refreshPromise !== null) {
+      return refreshPromise;
+    }
+
+    isLoading = true;
+    // Clean up current data while keeping reference
+    // Fuck this shit, praise redux :(
+    flights.length = 0;
+
+    refreshPromise = $timeout(() => {
+      console.log('Refreshing XMAN data with these options :');
+      console.log(queryParameters);
+      return $q.resolve(stubData);
+    }, 1000)
+    .then(function(data) {
+      // Process data here
+      _.map(data, function(f) {
+        flights.push(new XmanFlight(f));
+      });
+      refreshPromise = null;
+      bootstrapped = true;
+      isLoading = false;
       return flights;
-    })
+    });
+
+    return refreshPromise;
   };
 
   service.isLoading = function() {
@@ -140,9 +153,6 @@ function xmanFlights(_, $http, $q, api, errors, $timeout, $rootScope) {
   service.setVerticalFilter = function(verticalFilter) {
     queryParameters.verticalFilter = !!verticalFilter;
   };
-
-
-
 
   return service;
 

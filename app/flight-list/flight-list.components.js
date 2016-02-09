@@ -74,24 +74,24 @@ function xmanFlightListController(xmanFlights) {
 
 }
 
-xmanFlightRowController.$inject = ['_', 'xmanFilterService'];
-function xmanFlightRowController(_, xmanFilterService) {
+xmanFlightRowController.$inject = ['_', 'xmanHighlighter'];
+function xmanFlightRowController(_, xmanHighlighter) {
   var xmanFlightRow = this;
 
   xmanFlightRow.isHighlighted = function() {
-    return xmanFilterService.isHighlighted(xmanFlightRow.flight);
+    return xmanHighlighter.isHighlighted(xmanFlightRow.flight);
   };
 
   xmanFlightRow.getClasses = function() {
     return {
-      highlight: xmanFilterService.isHighlighted(xmanFlightRow.flight)
+      highlight: xmanFlightRow.isHighlighted()
     };
   };
 
 }
 
-xmanSpeedMachController.$inject = ['mySector'];
-function xmanSpeedMachController(mySector) {
+xmanSpeedMachController.$inject = ['mySector', 'xmanHighlighter'];
+function xmanSpeedMachController(mySector, xmanHighlighter) {
   var xmanSpeedMach = this;
 
   xmanSpeedMach.isDisabled = function() {
@@ -105,17 +105,7 @@ function xmanSpeedMachController(mySector) {
   // True if action needed,
   // False if everything is done
   function isActionComplete(flight) {
-    var minCleanSpeed = _.get(flight, 'currentStatus.minimumCleanSpeed');
-    var currentMach = _.get(flight, 'currentStatus.machReduction') || -1;
-    var proposedMach = _.get(flight, 'proposal.machReduction');
-
-    if(_.get(flight, 'currentStatus.minimumCleanSpeed') === true) {
-      return true;
-    }
-    if(currentMach >= proposedMach) {
-      return true;
-    }
-    return false;
+    return !xmanHighlighter.hasPendingAction(flight);
   }
 
   xmanSpeedMach.possibleSpeeds = [0, 1, 2, 3, 4];

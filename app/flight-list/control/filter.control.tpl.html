@@ -1,0 +1,25 @@
+<div layout-fill layout="row" layout-align="space-between center" flex>
+  <span>List filters</span>
+  <span>
+    <md-select 
+      ng-model="$ctrl.destinationFilter"
+      md-on-close="$ctrl.updateDestinationFilter()"
+      multiple
+      required
+    >
+      <md-option ng-repeat="dest in $ctrl.possibleDestinations" ng-value="dest">{{dest}}</md-option>
+    </md-select>
+  </span>
+  <md-checkbox
+    ng-checked="$ctrl.verticalFilter" 
+    ng-click="$ctrl.toggleVerticalFilter()"
+  >
+    Vertical filter
+  </md-checkbox>
+  <md-checkbox
+    ng-checked="$ctrl.geographicalFilter"
+    ng-click="$ctrl.toggleGeographicalFilter()"
+  >
+    Geographical filter
+  </md-checkbox>
+</div>

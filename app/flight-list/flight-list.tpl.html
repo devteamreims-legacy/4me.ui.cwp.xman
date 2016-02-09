@@ -1,5 +1,6 @@
-<div layout="row" layout-padding class="xman-control">
-  <fme-xman-control flex></fme-xman-control>
+<div layout="column" layout-padding class="xman-controls">
+  <fme-xman-filter-control flex></fme-xman-filter-control>
+  <fme-xman-highlight-control flex></fme-xman-highlight-control>
 </div>
 <div layout="row" layout-padding class="xman-row-title">
   <div flex="10" class="callsign">Callsign</div>
@@ -13,7 +14,4 @@
 <md-divider></md-divider>
 <div layout="column" layout-fill>
 <fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight" flex></fme-xman-flight-row>
-<fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight"></fme-xman-flight-row>
-<fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight"></fme-xman-flight-row>
-<fme-xman-flight-row ng-repeat="flight in xmanFlightList.flights track by $index" flight="flight"></fme-xman-flight-row>
 </div>

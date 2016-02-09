@@ -1,0 +1,21 @@
+<div layout-fill layout="row" layout-align="space-between center" flex>
+  <span>Highlight filter</span>
+  <md-checkbox
+    ng-checked="$ctrl.filterByDestination"
+    ng-click="$ctrl.toggleFilterByDestination()"
+  >
+    By destination
+  </md-checkbox>
+  <md-checkbox
+    ng-checked="$ctrl.filterByFlightLevel"
+    ng-click="$ctrl.toggleFilterByFlightLevel()"
+  >
+    By flight level
+  </md-checkbox>
+  <md-checkbox
+    ng-checked="$ctrl.filterByTodo"
+    ng-click="$ctrl.toggleFilterByTodo()"
+  >
+    With pending actions
+  </md-checkbox>
+</div>

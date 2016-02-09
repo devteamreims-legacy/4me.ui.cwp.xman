@@ -6,7 +6,7 @@
   <div flex="5" layout="row" layout-align="center" class="delay"><fme-xman-delay flight="xmanFlightRow.flight" /></div>
   <div flex="5" layout="row" layout-align="center" class="flight-level"><md-button class="xman-selector-button">{{xmanFlightRow.flight.position.currentFlightLevel}}</md-button></div>
   <div flex="20" layout="column" layout-align="center center" class="cop">
-    <md-button class="xman-selector-button">{{xmanFlightRow.flight.cop}}</md-button>
+    {{xmanFlightRow.flight.cop}}
     <span class="cop-times">12:45&#8594;12:48</span>
   </div>
   <div flex="35" class="speeds" layout="row" layout-align="center center"><fme-xman-speed-mach flight="xmanFlightRow.flight" /></div>
