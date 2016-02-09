@@ -20,13 +20,10 @@ xmanHighlighter.$inject = ['_'];
 function xmanHighlighter(_) {
   let service = {};
 
-  // truthTest will be called like this :
-  // truthTest(values, flight)
-
   let filters = {
     destination: {
       active: false,
-      values: [],
+      values: ['EGLL', 'LSZH'],
       truthTest: function(flight) {
         return !this.active || isDestinationHighlighted(this.values, flight)
       }
@@ -42,12 +39,12 @@ function xmanHighlighter(_) {
       active: false,
       values: null,
       truthTest: function(flight) { 
-        return !this.active || hasPendingAction(this.values, flight)
+        return !this.active || hasPendingAction(flight)
       }
     }
   };
 
-  service.hasStuffTodo = (flight) => hasPendingAction(null, flight);
+  service.hasPendingAction = hasPendingAction;
 
   service.isHighlighted = (flight) => {
     // Nothing filtered, nothing highlighted
@@ -104,7 +101,7 @@ function xmanHighlighter(_) {
 
   // True if action needed,
   // False if everything is done
-  function hasPendingAction(unused, flight) {
+  function hasPendingAction(flight) {
     let minCleanSpeed = _.get(flight, 'currentStatus.minimumCleanSpeed');
     let currentMach = _.get(flight, 'currentStatus.machReduction') || -1;
     let proposal = _.get(flight, 'proposal', {});
@@ -128,8 +125,6 @@ function xmanHighlighter(_) {
     // Else, we have pending actions
     return true;
   }
-
-  service.hasPendingAction = hasPendingAction;
 
   return service;
 }

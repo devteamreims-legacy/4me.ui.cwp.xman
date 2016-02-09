@@ -27,37 +27,68 @@ xmanControlComponents.component('fmeXmanFilterControl', {
   templateUrl: 'views/cwp.xman/app/flight-list/control/filter.control.tpl.html'
 });
 
-xmanHighlightControlController.$inject = ['_', 'xmanFlights', 'xmanHighlighter', '$rootScope'];
-function xmanHighlightControlController(_, xmanFlights, xmanHighlighter, $rootScope) {
-  let xmanHighlightControl = this;
+xmanHighlightControlController.$inject = ['_', 'xmanFlights', 'xmanHighlighter'];
+function xmanHighlightControlController(_, xmanFlights, xmanHighlighter) {
 
   let currentFilter = xmanHighlighter.getFilter();
 
+  // Highlight stuff to do by default
   xmanHighlighter.togglePendingAction(true);
-  
-  xmanHighlightControl.filterByTodo = currentFilter.pendingAction.active;
 
-  xmanHighlightControl.toggleFilterByTodo = () => {
+  // byTodo
+  this.filterByTodo = currentFilter.pendingAction.active;
+  this.toggleFilterByTodo = () => {
     console.log('Toggling pending action highlighter');
-    xmanHighlightControl.filterByTodo = xmanHighlighter.togglePendingAction();
-    console.log(xmanHighlightControl.filterByTodo);
+    this.filterByTodo = xmanHighlighter.togglePendingAction();
+    console.log(this.filterByTodo);
   };
 
-  xmanHighlightControl.filterByFlightLevel = currentFilter.flightLevel.active;
+  // byFlightLevel
 
-  xmanHighlightControl.toggleFilterByFlightLevel = () => {
+  this.filterByFlightLevel = currentFilter.flightLevel.active;
+  
+  this.toggleFilterByFlightLevel = () => {
     console.log('Toggling FL highlighter');
-    xmanHighlightControl.filterByFlightLevel = xmanHighlighter.toggleFlightLevel();
-    console.log(xmanHighlightControl.filterByFlightLevel);
+    this.filterByFlightLevel = xmanHighlighter.toggleFlightLevel();
+    console.log(this.filterByFlightLevel);
   };
 
-  xmanHighlightControl.filterByDestination = currentFilter.destination.active;
+  this.isByFlightLevelDisabled = () => _.isEmpty(currentFilter.flightLevel.values);
 
-  xmanHighlightControl.toggleFilterByDestination = () => {
+  this.getByFlightLevelString = () => {
+    if(this.isByFlightLevelDisabled()) {
+      return '';
+    }
+
+    let r = ' (';
+
+    r += currentFilter.flightLevel.values.join(', ');
+    r += ')';
+
+    return r;
+  }
+
+  // byDestination
+  this.filterByDestination = currentFilter.destination.active;
+  
+  this.toggleFilterByDestination = () => {
     console.log('Toggling destination highlighter');
-    xmanHighlightControl.filterByDestination = xmanHighlighter.toggleDestination();
-    console.log(xmanHighlightControl.filterByDestination);
+    this.filterByDestination = xmanHighlighter.toggleDestination();
+    console.log(this.filterByDestination);
   };
+
+  this.isByDestinationDisabled = () => _.isEmpty(currentFilter.destination.values);
+
+  this.getByDestinationString = () => {
+    if(this.isByDestinationDisabled()) {
+      return '';
+    }
+    let r = ' (';
+    r += currentFilter.destination.values.join(', ');
+    r += ')';
+    return r;
+  }
+
 }
 
 xmanFilterControlController.$inject = ['_', 'xmanFlights'];
