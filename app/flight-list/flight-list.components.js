@@ -26,7 +26,6 @@ xmanFlightListComponents.component('fmeXmanFlightRow', {
   bindings: {
     flight: '='
   },
-  controllerAs: 'xmanFlightRow',
   templateUrl: 'views/cwp.xman/app/flight-list/flight-row.tpl.html'
 });
 
@@ -36,7 +35,6 @@ xmanFlightListComponents.component('fmeXmanSpeedMach', {
   bindings: {
     flight: '='
   },
-  controllerAs: 'xmanSpeedMach',
   templateUrl: 'views/cwp.xman/app/flight-list/speed-mach.tpl.html'
 });
 
@@ -62,68 +60,65 @@ xmanFlightListComponents.component('fmeXmanDelay', {
 
 xmanFlightListController.$inject = ['xmanFlights'];
 function xmanFlightListController(xmanFlights) {
-  var xmanFlightList = this;
 
-  xmanFlightList.flights = [];
+  this.flights = [];
 
-  xmanFlights.getAll().then(function(data) {
-    xmanFlightList.flights = data;
-  });
+  xmanFlights.getAll().then((data) => this.flights = data);
 
-  xmanFlightList.isLoading = xmanFlights.isLoading;
+  this.isLoading = xmanFlights.isLoading;
 
 }
 
 xmanFlightRowController.$inject = ['_', 'xmanHighlighter'];
 function xmanFlightRowController(_, xmanHighlighter) {
-  var xmanFlightRow = this;
 
-  xmanFlightRow.isHighlighted = function() {
-    return xmanHighlighter.isHighlighted(xmanFlightRow.flight);
-  };
+  var self = this;
 
-  xmanFlightRow.getClasses = function() {
-    return {
-      highlight: xmanFlightRow.isHighlighted()
-    };
-  };
+  this.isHighlighted = () => xmanHighlighter.isHighlighted(this.flight);
+
+  this.getClasses = () => ({
+    highlight: this.isHighlighted()
+  });
+
+  let clickOnHighlightFilter = (type, value) => xmanHighlighter.toggleValue(type, value);
+
+
+  this.clickOnFlightLevel = () => clickOnHighlightFilter('flightLevel', this.flight.position.currentFlightLevel);
+  this.clickOnDestination = () => clickOnHighlightFilter('destination', this.flight.destination);
+  this.destinationButtonClasses = () => ({
+    'md-accent md-hue-1': xmanHighlighter.isValueSelected('destination', this.flight.destination)
+  });
+  this.flightLevelButtonClasses = () => ({
+    'md-accent md-hue-1': xmanHighlighter.isValueSelected('flightLevel', this.flight.position.currentFlightLevel)
+  });
 
 }
 
 xmanSpeedMachController.$inject = ['mySector', 'xmanHighlighter'];
 function xmanSpeedMachController(mySector, xmanHighlighter) {
-  var xmanSpeedMach = this;
 
-  xmanSpeedMach.isDisabled = function() {
-    return _.isEqual(xmanSpeedMach.flight.proposal.machReduction, 0);
-  };
-
-  xmanSpeedMach.getMachProposal = function() {
-    return xmanSpeedMach.proposal.machReduction;
-  };
+  this.isDisabled = () => _.isEqual(this.flight.proposal.machReduction, 0);
 
   // True if action needed,
   // False if everything is done
-  function isActionComplete(flight) {
-    return !xmanHighlighter.hasPendingAction(flight);
-  }
+  const isActionComplete = (flight) => !xmanHighlighter.hasPendingAction(flight);
 
-  xmanSpeedMach.possibleSpeeds = [0, 1, 2, 3, 4];
+  this.possibleSpeeds = [0, 1, 2, 3, 4];
 
-  var possibleClasses = {
+  const possibleClasses = {
     'md-primary': false,
     'md-raised': true,
     'md-warn': false
   };
 
-  xmanSpeedMach.getMcsButtonClass = function() {
-    var ret = Object.assign({}, possibleClasses);
+  this.getMcsButtonClass = () => {
+    const ret = Object.assign({}, possibleClasses);
 
-    if(_.get(xmanSpeedMach.flight, 'currentStatus.minimumCleanSpeed') === true) {
+    if(_.get(this.flight, 'currentStatus.minimumCleanSpeed') === true) {
       Object.assign(ret, {'md-primary': true});
     }
 
-    if(isActionComplete(xmanSpeedMach.flight)) {
+    if(false && isActionComplete(this.flight)) {
       Object.assign(ret, {'md-raised': false});
     }
 
@@ -131,48 +126,40 @@ function xmanSpeedMachController(mySector, xmanHighlighter) {
     return ret;
   };
 
-  xmanSpeedMach.toggleMcs = function() {
-    xmanSpeedMach.flight.toggleMcs(mySector.get().sectors);
-  };
+  this.toggleMcs = () => this.flight.toggleMcs(mySector.get().sectors);
 
+  this.getButtonClassForSpeed = (s) => {
+    const ret = Object.assign({}, possibleClasses);
 
-
-  xmanSpeedMach.getButtonClassForSpeed = function(s) {
-    var ret = Object.assign({}, possibleClasses);
-
-    var currentMach = _.get(xmanSpeedMach.flight, 'currentStatus.machReduction');
-    var proposedMach = _.get(xmanSpeedMach.flight, 'proposal.machReduction');
+    const currentMach = _.get(this.flight, 'currentStatus.machReduction');
+    const proposedMach = _.get(this.flight, 'proposal.machReduction');
 
     if(currentMach === s) {
       Object.assign(ret, {'md-primary': true});
     } else if(proposedMach === s) {
       Object.assign(ret, {'md-warn': true});
-    }
-
-    if(currentMach !== s && isActionComplete(xmanSpeedMach.flight)) {
-      Object.assign(ret, {'md-raised': false});
+      // Softer color if action is complete
+      if(isActionComplete(this.flight)) {
+        Object.assign(ret, {'md-hue-1': true});
+      }
     }
 
     return ret;
   };
 
-  xmanSpeedMach.getUndoButtonClass = function() {
-    if(_.isEmpty(xmanSpeedMach.flight.currentStatus)) {
-      return '';
+  this.getUndoButtonClass = () => {
+    if(_.isEmpty(this.flight.currentStatus)) {
+      return 'md-raised';
     }
-    return 'md-accent';
+    return 'md-raised md-accent';
   };
 
-  xmanSpeedMach.isUndoButtonDisabled = function() {
-    return _.isEmpty(xmanSpeedMach.flight.currentStatus);
-  };
+  this.isUndoButtonDisabled = () => _.isEmpty(this.flight.currentStatus);
 
-  xmanSpeedMach.setSpeed = function(s) {
-    xmanSpeedMach.flight.reduceMach(mySector.get().sectors, s);
-  };
+  this.setSpeed = (s) => this.flight.reduceMach(mySector.get().sectors, s);
 
-  xmanSpeedMach.undoSpeed = function() {
-    xmanSpeedMach.flight.currentStatus = {};
+  this.undoSpeed = () => {
+    this.flight.currentStatus = {};
   };
 }
 

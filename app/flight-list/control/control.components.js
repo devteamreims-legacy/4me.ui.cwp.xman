@@ -36,21 +36,21 @@ function xmanHighlightControlController(_, xmanFlights, xmanHighlighter) {
   xmanHighlighter.togglePendingAction(true);
 
   // byTodo
-  this.filterByTodo = currentFilter.pendingAction.active;
+  this.filterByTodo = () => currentFilter.pendingAction.active;
   this.toggleFilterByTodo = () => {
     console.log('Toggling pending action highlighter');
-    this.filterByTodo = xmanHighlighter.togglePendingAction();
-    console.log(this.filterByTodo);
+    xmanHighlighter.togglePendingAction();
+    console.log(this.filterByTodo());
   };
 
   // byFlightLevel
 
-  this.filterByFlightLevel = currentFilter.flightLevel.active;
+  this.filterByFlightLevel = () => currentFilter.flightLevel.active;
   
   this.toggleFilterByFlightLevel = () => {
     console.log('Toggling FL highlighter');
-    this.filterByFlightLevel = xmanHighlighter.toggleFlightLevel();
-    console.log(this.filterByFlightLevel);
+    xmanHighlighter.toggleFlightLevel();
+    console.log(this.filterByFlightLevel());
   };
 
   this.isByFlightLevelDisabled = () => _.isEmpty(currentFilter.flightLevel.values);
@@ -69,12 +69,12 @@ function xmanHighlightControlController(_, xmanFlights, xmanHighlighter) {
   }
 
   // byDestination
-  this.filterByDestination = currentFilter.destination.active;
+  this.filterByDestination = () => currentFilter.destination.active;
   
   this.toggleFilterByDestination = () => {
     console.log('Toggling destination highlighter');
-    this.filterByDestination = xmanHighlighter.toggleDestination();
-    console.log(this.filterByDestination);
+    xmanHighlighter.toggleDestination();
+    console.log(this.filterByDestination());
   };
 
   this.isByDestinationDisabled = () => _.isEmpty(currentFilter.destination.values);

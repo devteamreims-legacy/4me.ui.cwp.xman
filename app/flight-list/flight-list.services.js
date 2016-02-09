@@ -23,14 +23,14 @@ function xmanHighlighter(_) {
   let filters = {
     destination: {
       active: false,
-      values: ['EGLL', 'LSZH'],
+      values: [],
       truthTest: function(flight) {
         return !this.active || isDestinationHighlighted(this.values, flight)
       }
     },
     flightLevel: {
       active: false,
-      values: [380],
+      values: [],
       truthTest: function(flight) {
         return !this.active || isFlightLevelHighlighted(this.values, flight)
       }
@@ -61,6 +61,39 @@ function xmanHighlighter(_) {
   service.togglePendingAction = (val) => toggleFilter(filters, 'pendingAction', val);
   service.toggleFlightLevel = (val) => toggleFilter(filters, 'flightLevel', val);
   service.toggleDestination = (val) => toggleFilter(filters, 'destination', val);
+
+  service.toggleValue = (type, value) => {
+    // Sanitize type
+    if(!_.includes(_.keys(filters), type)) {
+      throw new Error('Trying to toggle a value for an unknwon type');
+    }
+
+    let emptied = false;
+    let created = false;
+
+    if(isValueSelected(type, value)) {
+      // _.pull will return the newly formed array
+      // If length is 0, it means we just removed everything from this filter
+      emptied = _.pull(filters[type].values, value).length === 0;
+
+    } else {
+      // push will return the length of the array
+      // If length is 1, it means we just created the filter
+      created = filters[type].values.push(value) === 1;
+    }
+
+    // We must change the active state
+    if(created) {
+      filters[type].active = true;
+    }
+
+    if(emptied) {
+      filters[type].active = false;
+    }
+  };
+
+  const isValueSelected = (type, value) => _.includes(_.get(filters, type + '.values', []), value);
+  service.isValueSelected = isValueSelected;
 
   function toggleFilter(filters, filterName, val) {
     let filter = _.get(filters, filterName, {});

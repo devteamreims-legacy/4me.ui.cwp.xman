@@ -49,7 +49,7 @@ var stubData = [
 },{
   flightId: 12346,
   arcid: 'AFR1015',
-  destination: 'EGLL',
+  destination: 'LSZH',
   cop: 'ABNUR',
   estimatedTimeOverCop: Date.now() + 1000*60*12,
   delay: 12,
