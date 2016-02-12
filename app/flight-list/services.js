@@ -107,7 +107,6 @@ function xmanHighlighter(_) {
   }
 
   function isFilterEmpty(filters) {
-    console.log('POUET');
     return _.every(filters, (f) => f.active === false);
   }
 
