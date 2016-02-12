@@ -1,7 +1,3 @@
-(function() {
-
-'use strict';
-
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.api
@@ -14,5 +10,3 @@ angular.module('4me.ui.cwp.xman.api', [])
 .constant('cwp.xman.api', {
   rootPath: 'http://localhost:3000'
 });
-
-}());
