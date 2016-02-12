@@ -89,35 +89,39 @@ function xmanHighlightControlController(xmanFlights, xmanHighlighter) {
 
 }
 
-xmanFilterControlController.$inject = ['xmanFlights'];
-function xmanFilterControlController(xmanFlights) {
+xmanFilterControlController.$inject = ['xmanFlights', 'xmanDestinations', 'xmanQueryParameters'];
+function xmanFilterControlController(xmanFlights, xmanDestinations, xmanQueryParameters) {
 
   // Defaults
-  this.verticalFilter = false;
-  this.possibleDestinations = ['EGLL', 'LSZH'];
+  this.queryParams = xmanQueryParameters.get();
+  this.possibleDestinations = _.clone(xmanDestinations);
   this.destinationFilter = _.clone(this.possibleDestinations);
-  this.geographicalFilter = false;
 
   this.toggleVerticalFilter = () => {
     console.log('Toggling verticalFilter in filter control');
-    this.verticalFilter = !this.verticalFilter;
+    xmanQueryParameters.toggleVerticalFilter();
     xmanFlights.refresh();
-    console.log(this.verticalFilter);
   };
+
+  this.isVerticalFilterDisabled = () => !xmanQueryParameters.isVerticalFilterAllowed();
+  this.isGeographicalFilterDisabled = () => !xmanQueryParameters.isGeographicalFilterAllowed();
+
 
   this.toggleGeographicalFilter = () => {
     console.log('Toggling geographicalFilter');
-    this.geographicalFilter = !this.geographicalFilter;
+    xmanQueryParameters.toggleGeographicalFilter();
     xmanFlights.refresh();
-    console.log(this.verticalFilter);
   };
 
   this.updateDestinationFilter = () => {
     console.log('Event fired !');
     console.log('Select value :', this.destinationFilter);
+    
     if(_.isEmpty(this.destinationFilter)) {
       this.destinationFilter = _.clone(this.possibleDestinations);
     }
+
+    xmanQueryParameters.setDestinations(this.destinationFilter);
     xmanFlights.refresh();
   };
 

@@ -5,17 +5,19 @@
   multiple
   required
 >
-  <md-option ng-repeat="dest in $ctrl.possibleDestinations" ng-value="dest">{{dest}}</md-option>
+  <md-option ng-repeat="dest in $ctrl.possibleDestinations track by $index" ng-value="dest">{{dest}}</md-option>
 </md-select>
 <md-checkbox
-  ng-checked="$ctrl.verticalFilter" 
-  ng-click="$ctrl.toggleVerticalFilter()"
->
-  Vertical filter
-</md-checkbox>
-<md-checkbox
-  ng-checked="$ctrl.geographicalFilter"
+  ng-checked="$ctrl.queryParams.geographicalFilter"
   ng-click="$ctrl.toggleGeographicalFilter()"
+  ng-disabled="$ctrl.isGeographicalFilterDisabled()"
 >
   Geographical filter
+</md-checkbox>
+<md-checkbox
+  ng-checked="$ctrl.queryParams.verticalFilter" 
+  ng-click="$ctrl.toggleVerticalFilter()"
+  ng-disabled="$ctrl.isVerticalFilterDisabled()"
+>
+  Vertical filter
 </md-checkbox>

@@ -15,7 +15,9 @@ angular.module('4me.ui.cwp.xman.services', [
   '4me.ui.cwp.xman.api',
   '4me.ui.cwp.xman.status'
 ])
-.factory('xmanFlights', xmanFlights);
+.factory('xmanFlights', xmanFlights)
+.constant('xmanDestinations', ['EGLL', 'LSZH'])
+.factory('xmanQueryParameters', xmanQueryParameters);
 
 var stubData = [
 {
@@ -84,8 +86,10 @@ var stubData = [
   currentStatus: {}
 }];
 
-xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope'];
-function xmanFlights($http, $q, api, errors, $timeout, $rootScope) {
+/*eslint-disable angular/di-unused*/
+xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope', 'xmanQueryParameters'];
+function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryParameters) {
+  
   var service = {};
 
   var refreshPromise = null;
@@ -97,22 +101,23 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope) {
     sectors: [],
     verticalFilter: true
   };
+  
+  console.log('Instantiated !');
 
-  $rootScope.$on('fme:new-sectors', function() {
+  let handler = $rootScope.$on('fme:new-sectors', function() {
     console.log('Sectors changed for XMAN !!');
+    service.refresh();
   });
 
   service.bootstrap = function() {
-    var self = this;
     if(!bootstrapped) {
-      return self.refresh();
+      return this.refresh();
     }
     return $q.resolve(flights);
   };
 
   service.getAll = function() {
-    var self = this;
-    return self.bootstrap();
+    return this.bootstrap();
   };
 
   service.refresh = () => {
@@ -127,7 +132,7 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope) {
 
     refreshPromise = $timeout(() => {
       console.log('Refreshing XMAN data with these options :');
-      console.log(queryParameters);
+      console.log(xmanQueryParameters.prepareParams());
       return $q.resolve(stubData);
     }, 1000)
     .then(function(data) {
@@ -144,17 +149,15 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope) {
     return refreshPromise;
   };
 
-  service.isLoading = function() {
-    return !!isLoading;
-  };
+  service.isLoading = () => !!isLoading;
 
   service.setVerticalFilter = function(verticalFilter) {
-    queryParameters.verticalFilter = !!verticalFilter;
   };
 
   return service;
 
 }
+/*eslint-enable angular/di-unused*/
 
 function XmanFlight(flightData) {
   Object.assign(this, flightData);
@@ -180,3 +183,88 @@ XmanFlight.prototype.toggleMcs = function(who) {
   Object.assign(this.currentStatus, currentStatus);
   return this;
 };
+
+xmanQueryParameters.$inject = ['mySector', 'xmanDestinations'];
+function xmanQueryParameters(mySector, xmanDestinations) {
+  let defaults = {
+    // Other query parameters can be set here
+  };
+
+  let service = {};
+
+  let parameters = {
+    geographicalFilter: true,
+    verticalFilter: true,
+    destinationFilter: _.clone(xmanDestinations)
+  };
+
+
+  service.prepareParams = () => {
+    let ret = Object.assign({}, defaults);
+    if(parameters.destinationFilter !== undefined) {
+      ret.destinations = parameters.destinationFilter;
+    }
+
+    if(parameters.geographicalFilter === true) {
+      ret.sectors = _.clone(mySector.get().sectors);
+    }
+
+    if(parameters.verticalFilter === true) {
+      ret.verticalFilter = true;
+    }
+    
+    return ret;
+  };
+
+  service.get = () => parameters;
+
+  service.setDestinations = (destinations) => {
+    if(!_.isArray(destinations)) {
+      destinations = [destinations];
+    }
+    let unknownDestinations = _.without(destinations, ...xmanDestinations);
+    
+    if(!_.isEmpty(unknownDestinations)) {
+      throw new Error('Unknown destinations found : ' + unknownDestinations.join(','));
+    }
+
+    if(_.isEmpty(destinations)) {
+      delete parameters.destinations;
+      return;
+    }
+
+    parameters.destinations = destinations;
+    return;
+  };
+
+
+  service.toggleGeographicalFilter = (val) => {
+    if(val !== undefined) {
+      parameters.geographicalFilter = !!val;
+    } else {
+      parameters.geographicalFilter = !parameters.geographicalFilter;
+    }
+
+    if(parameters.geographicalFilter === false) {
+      parameters.verticalFilter = false;
+    }
+  };
+  
+  service.toggleVerticalFilter = (val) => {
+    if(parameters.geographicalFilter !== true) {
+      throw new Error('Cannot set vertical filter if geographical filter is disabled');
+    }
+    if(val !== undefined) {
+      parameters.verticalFilter = !!val;
+    } else {
+      parameters.verticalFilter = !parameters.verticalFilter;
+    }
+  };
+
+  
+  
+  service.isVerticalFilterAllowed = () => parameters.geographicalFilter && service.isGeographicalFilterAllowed();
+  service.isGeographicalFilterAllowed = () => !_.isEmpty(mySector.get().sectors);
+
+  return service;
+}
