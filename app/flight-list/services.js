@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.flight-list.services
@@ -7,15 +9,14 @@
  **/
 
 var xmanFlightListServices = angular.module('4me.ui.cwp.xman.flight-list.services', [
-  '4me.core.lodash',
   '4me.ui.cwp.xman.services'
 ]);
 
 xmanFlightListServices.factory('xmanHighlighter', xmanHighlighter);
 
 
-xmanHighlighter.$inject = ['_'];
-function xmanHighlighter(_) {
+xmanHighlighter.$inject = [];
+function xmanHighlighter() {
   let service = {};
 
   let filters = {

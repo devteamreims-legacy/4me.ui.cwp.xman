@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.flight-list
@@ -7,7 +9,6 @@
  * Components related to flight-list controls
  */
 var xmanControlComponents = angular.module('4me.ui.cwp.xman.flight-list.control.components', [
-  '4me.core.lodash',
   '4me.ui.cwp.xman.services',
   '4me.ui.cwp.xman.flight-list.services'
 ]);
@@ -24,8 +25,8 @@ xmanControlComponents.component('fmeXmanFilterControl', {
   templateUrl: 'views/cwp.xman/app/flight-list/control/filter.control.tpl.html'
 });
 
-xmanHighlightControlController.$inject = ['_', 'xmanFlights', 'xmanHighlighter'];
-function xmanHighlightControlController(_, xmanFlights, xmanHighlighter) {
+xmanHighlightControlController.$inject = ['xmanFlights', 'xmanHighlighter'];
+function xmanHighlightControlController(xmanFlights, xmanHighlighter) {
 
   let currentFilter = xmanHighlighter.getFilter();
 
@@ -88,8 +89,8 @@ function xmanHighlightControlController(_, xmanFlights, xmanHighlighter) {
 
 }
 
-xmanFilterControlController.$inject = ['_', 'xmanFlights'];
-function xmanFilterControlController(_, xmanFlights) {
+xmanFilterControlController.$inject = ['xmanFlights'];
+function xmanFilterControlController(xmanFlights) {
 
   // Defaults
   this.verticalFilter = false;

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.services
@@ -8,7 +10,6 @@
  */
 angular.module('4me.ui.cwp.xman.services', [
   '4me.core.config',
-  '4me.core.lodash',
   '4me.core.sectors.services',
   '4me.ui.cwp.xman.errors',
   '4me.ui.cwp.xman.api',
@@ -83,8 +84,8 @@ var stubData = [
   currentStatus: {}
 }];
 
-xmanFlights.$inject = ['_', '$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope'];
-function xmanFlights(_, $http, $q, api, errors, $timeout, $rootScope) {
+xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope'];
+function xmanFlights($http, $q, api, errors, $timeout, $rootScope) {
   var service = {};
 
   var refreshPromise = null;

@@ -2,6 +2,8 @@ import api from './api';
 import services from './services';
 import flightList from './flight-list/';
 
+import _ from 'lodash';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman
@@ -75,13 +77,12 @@ function mappingRegistration(mainOrganService, $state, $injector) {
  */
 
 angular.module('4me.ui.cwp.xman.errors', [
-  '4me.core.lodash',
   '4me.core.errors'
 ])
 .factory('cwp.xman.errors', mappingErrors);
 
-mappingErrors.$inject = ['_', 'errors'];
-function mappingErrors(_, errors) {
+mappingErrors.$inject = ['errors'];
+function mappingErrors(errors) {
   var service = {};
 
   service.add = function(type, message, reason) {
@@ -92,13 +93,12 @@ function mappingErrors(_, errors) {
 }
 
 angular.module('4me.ui.cwp.xman.notifications', [
-  '4me.core.lodash',
   '4me.core.notifications'
 ])
 .factory('cwp.xman.notifications', mappingNotifications);
 
-mappingNotifications.$inject = ['_', 'notifications'];
-function mappingNotifications(_, notifications) {
+mappingNotifications.$inject = ['notifications'];
+function mappingNotifications(notifications) {
   var service = {};
 
   service.add = function(priority, title, props) {
@@ -117,7 +117,6 @@ function mappingNotifications(_, notifications) {
 
 // We need another full service here, not some proxy status service
 angular.module('4me.ui.cwp.xman.status', [
-  '4me.core.lodash',
   '4me.core.status'
 ])
 .factory('cwp.xman.status', mappingStatus);

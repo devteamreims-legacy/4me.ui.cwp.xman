@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.spvr.mapping.ctrlroom.components
@@ -6,7 +8,6 @@
  * Control room components
  **/
 var xmanFlightListComponents = angular.module('4me.ui.cwp.xman.flight-list.components', [
-  '4me.core.lodash',
   '4me.ui.cwp.xman.services',
   '4me.ui.cwp.xman.flight-list.services'
 ]);
@@ -67,8 +68,8 @@ function xmanFlightListController(xmanFlights) {
 
 }
 
-xmanFlightRowController.$inject = ['_', 'xmanHighlighter'];
-function xmanFlightRowController(_, xmanHighlighter) {
+xmanFlightRowController.$inject = ['xmanHighlighter'];
+function xmanFlightRowController(xmanHighlighter) {
 
   var self = this;
 
@@ -161,8 +162,8 @@ function xmanSpeedMachController(mySector, xmanHighlighter) {
   };
 }
 
-xmanAppliedByController.$inject = ['_'];
-function xmanAppliedByController(_) {
+xmanAppliedByController.$inject = [];
+function xmanAppliedByController() {
   var xmanAppliedBy = this;
 
   xmanAppliedBy.showApplication = function() {
@@ -178,8 +179,8 @@ function xmanAppliedByController(_) {
   }
 }
 
-xmanDelayController.$inject = ['_'];
-function xmanDelayController(_) {
+xmanDelayController.$inject = [];
+function xmanDelayController() {
   var xmanDelay = this;
 
   xmanDelay.getDelay = function() {
