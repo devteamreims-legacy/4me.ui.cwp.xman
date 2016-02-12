@@ -1,6 +1,3 @@
-(function() {
-'use strict';
-
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.flight-list
@@ -124,7 +121,4 @@ function xmanFilterControlController(_, xmanFlights) {
   };
 
 }
-
-
-}());
 

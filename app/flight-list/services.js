@@ -1,5 +1,3 @@
-(function() {
-'use strict';
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.flight-list.services
@@ -161,5 +159,3 @@ function xmanHighlighter(_) {
 
   return service;
 }
-
-}());

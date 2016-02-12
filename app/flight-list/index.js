@@ -1,5 +1,6 @@
-(function() {
-'use strict';
+import components from './components';
+import services from './services';
+import controlComponents from './control/';
 
 /**
  * @ngdoc overview
@@ -14,5 +15,3 @@ angular.module('4me.ui.cwp.xman.flight-list', [
   '4me.ui.cwp.xman.flight-list.control.components',
   '4me.ui.cwp.xman.flight-list.services'
 ]);
-
-}());

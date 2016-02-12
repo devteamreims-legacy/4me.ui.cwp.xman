@@ -1,5 +1,3 @@
-(function() {
-'use strict';
 /**
  * @ngdoc overview
  * @name 4me.ui.spvr.mapping.ctrlroom.components
@@ -206,5 +204,3 @@ function xmanDelayController(_) {
     return {color: gradient[index]};
   };
 }
-
-}());

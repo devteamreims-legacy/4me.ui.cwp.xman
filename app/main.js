@@ -1,5 +1,7 @@
-(function() {
-'use strict';
+import api from './api';
+import services from './services';
+import flightList from './flight-list/';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman
@@ -37,21 +39,19 @@ m.run(mappingRegistration);
 
 mappingConfig.$inject = ['$stateProvider'];
 function mappingConfig($stateProvider) {
-  $stateProvider.state('bootstrapped.xman-cwp', {
+  $stateProvider.state('xman-cwp', {
+    parent: 'bootstrapped',
     url: '/xman',
-    templateUrl: 'views/cwp.xman/app/index.tpl.html',
-    resolve: {
-      xmanFlights: function() { return true; }
-    }
+    templateUrl: 'views/cwp.xman/app/index.tpl.html'
   });
 };
 
-mappingRegistration = ['mainOrganService', '$state', '$injector'];
+mappingRegistration.$inject = ['mainOrganService', '$state', '$injector'];
 function mappingRegistration(mainOrganService, $state, $injector) {
   var r = mainOrganService.register({
     name: 'xman',
     navigateTo: function() {
-      $state.go('bootstrapped.xman-cwp');
+      $state.go('xman-cwp');
     },
     getNotificationService: function() {
       return $injector.get('cwp.xman.notifications');
@@ -137,5 +137,3 @@ function xmanController(errors, notifications, $state, xmanFlights) {
     return xmanFlights.isLoading();
   };
 }
-
-}());

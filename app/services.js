@@ -1,6 +1,3 @@
-(function() {
-'use strict';
-
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman.services
@@ -182,5 +179,3 @@ XmanFlight.prototype.toggleMcs = function(who) {
   Object.assign(this.currentStatus, currentStatus);
   return this;
 };
-
-}());
