@@ -52,6 +52,7 @@ mappingRegistration.$inject = ['mainOrganService', '$state', '$injector'];
 function mappingRegistration(mainOrganService, $state, $injector) {
   var r = mainOrganService.register({
     name: 'xman',
+    isActive: () => $state.includes('xman-cwp'),
     navigateTo: function() {
       $state.go('xman-cwp');
     },
