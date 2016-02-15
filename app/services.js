@@ -106,6 +106,8 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryPara
 
   let handler = $rootScope.$on('fme:new-sectors', function() {
     console.log('Sectors changed for XMAN !!');
+    console.log('Resetting query filters');
+    xmanQueryParameters.resetAfterNewSectors();
     service.refresh();
   });
 
@@ -193,8 +195,8 @@ function xmanQueryParameters(mySector, xmanDestinations) {
   let service = {};
 
   let parameters = {
-    geographicalFilter: true,
-    verticalFilter: true,
+    geographicalFilter: !_.isEmpty(mySector.get().sectors),
+    verticalFilter: !_.isEmpty(mySector.get().sectors),
     destinationFilter: _.clone(xmanDestinations)
   };
 
@@ -215,6 +217,15 @@ function xmanQueryParameters(mySector, xmanDestinations) {
     
     return ret;
   };
+
+  service.resetAfterNewSectors = () => {
+    if(!_.isEmpty(mySector.get().sectors)) {
+      return;
+    } else {
+      parameters.geographicalFilter = false;
+      parameters.verticalFilter = false;
+    }
+  }
 
   service.get = () => parameters;
 

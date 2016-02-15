@@ -103,8 +103,8 @@ function xmanFilterControlController(xmanFlights, xmanDestinations, xmanQueryPar
     xmanFlights.refresh();
   };
 
-  this.isVerticalFilterDisabled = () => !xmanQueryParameters.isVerticalFilterAllowed();
-  this.isGeographicalFilterDisabled = () => !xmanQueryParameters.isGeographicalFilterAllowed();
+  this.isVerticalFilterDisabled = () => xmanFlights.isLoading() || !xmanQueryParameters.isVerticalFilterAllowed();
+  this.isGeographicalFilterDisabled = () => xmanFlights.isLoading() || !xmanQueryParameters.isGeographicalFilterAllowed();
 
 
   this.toggleGeographicalFilter = () => {
