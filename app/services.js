@@ -30,7 +30,7 @@ var stubData = [
     rangeToCop: 153,
     when: Date.now() - 10*1000
   },
-  cop: 'ABNUR',
+  cop: 'BLM',
   estimatedTimeOverCop: Date.now() + 1000*60*12,
   delay: 2,
   proposal: {
@@ -50,12 +50,12 @@ var stubData = [
   flightId: 12346,
   arcid: 'AFR1015',
   destination: 'LSZH',
-  cop: 'ABNUR',
+  cop: 'BLM',
   estimatedTimeOverCop: Date.now() + 1000*60*12,
   delay: 12,
   position: {
-    currentFlightLevel: 380,
-    plannedFlightLevel: 380,
+    currentFlightLevel: 310,
+    plannedFlightLevel: 310,
     rangeToCop: 160,
     when: Date.now() - 9*1000
   },
@@ -89,7 +89,7 @@ var stubData = [
 /*eslint-disable angular/di-unused*/
 xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope', 'xmanQueryParameters'];
 function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryParameters) {
-  
+
   var service = {};
 
   var refreshPromise = null;
@@ -101,7 +101,7 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryPara
     sectors: [],
     verticalFilter: true
   };
-  
+
   console.log('Instantiated !');
 
   let handler = $rootScope.$on('fme:new-sectors', function() {
@@ -214,7 +214,7 @@ function xmanQueryParameters(mySector, xmanDestinations) {
     if(parameters.verticalFilter === true) {
       ret.verticalFilter = true;
     }
-    
+
     return ret;
   };
 
@@ -234,7 +234,7 @@ function xmanQueryParameters(mySector, xmanDestinations) {
       destinations = [destinations];
     }
     let unknownDestinations = _.without(destinations, ...xmanDestinations);
-    
+
     if(!_.isEmpty(unknownDestinations)) {
       throw new Error('Unknown destinations found : ' + unknownDestinations.join(','));
     }
@@ -260,7 +260,7 @@ function xmanQueryParameters(mySector, xmanDestinations) {
       parameters.verticalFilter = false;
     }
   };
-  
+
   service.toggleVerticalFilter = (val) => {
     if(parameters.geographicalFilter !== true) {
       throw new Error('Cannot set vertical filter if geographical filter is disabled');
@@ -272,8 +272,8 @@ function xmanQueryParameters(mySector, xmanDestinations) {
     }
   };
 
-  
-  
+
+
   service.isVerticalFilterAllowed = () => parameters.geographicalFilter && service.isGeographicalFilterAllowed();
   service.isGeographicalFilterAllowed = () => !_.isEmpty(mySector.get().sectors);
 
