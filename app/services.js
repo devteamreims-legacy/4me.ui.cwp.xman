@@ -219,12 +219,14 @@ XmanFlight.prototype.reduceMach = function reduceMach(who, machReduction, when) 
 };
 
 XmanFlight.prototype.toggleMcs = function(who, value, when) {
+  let mcs;
   if(value === undefined) {
-    let mcs = !this.currentStatus.minimumCleanSpeed;
+    mcs = !this.currentStatus.minimumCleanSpeed;
   } else {
-    let mcs = !!value;
+    mcs = !!value;
   }
-  var currentStatus = {
+  
+  const currentStatus = {
     when: when || Date.now(),
     who: who || {},
     minimumCleanSpeed: mcs
