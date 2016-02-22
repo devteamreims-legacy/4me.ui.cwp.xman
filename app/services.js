@@ -13,6 +13,7 @@ angular.module('4me.ui.cwp.xman.services', [
   '4me.core.sectors.services',
   '4me.ui.cwp.xman.errors',
   '4me.ui.cwp.xman.api',
+  '4me.ui.cwp.xman.socket',
   '4me.ui.cwp.xman.status'
 ])
 .factory('xmanFlights', xmanFlights)
@@ -41,7 +42,10 @@ var stubData = [
   },
   currentStatus: {
     when: Date.now(),
-    who: ['UF', 'KF'],
+    who: {
+      cwpId: 23,
+      sectors: ['UF', 'KF'],
+    },
     machReduction: 1,
     speed: null,
     minimumCleanSpeed: true
@@ -87,8 +91,8 @@ var stubData = [
 }];
 
 /*eslint-disable angular/di-unused*/
-xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.errors', '$timeout', '$rootScope', 'xmanQueryParameters'];
-function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryParameters) {
+xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.status', '$timeout', '$rootScope', 'xmanQueryParameters', 'xmanSocket'];
+function xmanFlights($http, $q, api, status, $timeout, $rootScope, xmanQueryParameters, xmanSocket) {
 
   var service = {};
 
@@ -102,14 +106,45 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryPara
     verticalFilter: true
   };
 
-  console.log('Instantiated !');
-
   let handler = $rootScope.$on('fme:new-sectors', function() {
     console.log('Sectors changed for XMAN !!');
     console.log('Resetting query filters');
     xmanQueryParameters.resetAfterNewSectors();
     service.refresh();
   });
+
+  if(xmanSocket.on) {
+    xmanSocket.on('update_status', (data) => {
+      console.log(data);
+
+      if(isLoading === true) {
+        console.log('Got socket data while loading data, discard socket data');
+        return;
+      }
+
+      if(data.flightId === undefined) {
+        console.log('Got empty data from socket');
+        return;
+      }
+
+      // Check machReduction here
+
+      let flight = _.find(flights, f => f.flightId === data.flightId);
+      
+      if(_.isEmpty(flight)) {
+        console.log(`Flight with id ${data.flightId} is not tracked, dismissing ...`);
+        return;
+      }
+
+      
+
+      delete data.flightId;
+
+      flight.setCurrentStatus(data);
+
+
+    });
+  }
 
   service.bootstrap = function() {
     if(!bootstrapped) {
@@ -132,29 +167,32 @@ function xmanFlights($http, $q, api, errors, $timeout, $rootScope, xmanQueryPara
     // Fuck this shit, praise redux :(
     flights.length = 0;
 
-    refreshPromise = $timeout(() => {
-      console.log('Refreshing XMAN data with these options :');
-      console.log(xmanQueryParameters.prepareParams());
-      return $q.resolve(stubData);
-    }, 1000)
-    .then(function(data) {
+    refreshPromise = $http.get(api.rootPath + api.xman.getAll, {
+      params: xmanQueryParameters.prepareParams()
+    })
+    .then(function(res) {
+      console.log(res.data);
+      const data = _.clone(stubData);
       // Process data here
-      _.map(data, function(f) {
-        flights.push(new XmanFlight(f));
-      });
+      _.map(res.data, f => flights.push(new XmanFlight(f)));
+      
       refreshPromise = null;
       bootstrapped = true;
       isLoading = false;
+      status.recover('getFlightList');
       return flights;
+    })
+    .catch((err) => {
+      refreshPromise = null;
+      bootstrapped = false;
+      isLoading = false;
+      status.escalate('getFlightList', 'critical', 'Could not get flight list from backend');
     });
 
     return refreshPromise;
   };
 
   service.isLoading = () => !!isLoading;
-
-  service.setVerticalFilter = function(verticalFilter) {
-  };
 
   return service;
 
@@ -165,21 +203,30 @@ function XmanFlight(flightData) {
   Object.assign(this, flightData);
 }
 
-XmanFlight.prototype.reduceMach = function reduceMach(who, machReduction) {
+XmanFlight.prototype.setCurrentStatus = function(status) {
+  Object.assign(this.currentStatus, status);
+  return this;
+}
+
+XmanFlight.prototype.reduceMach = function reduceMach(who, machReduction, when) {
   var currentStatus = {
-    when: Date.now(),
-    who: who || [],
+    when: when || Date.now(),
+    who: who || {},
     machReduction: machReduction
   };
   Object.assign(this.currentStatus, currentStatus);
   return this;
 };
 
-XmanFlight.prototype.toggleMcs = function(who) {
-  var mcs = !this.currentStatus.minimumCleanSpeed;
+XmanFlight.prototype.toggleMcs = function(who, value, when) {
+  if(value === undefined) {
+    let mcs = !this.currentStatus.minimumCleanSpeed;
+  } else {
+    let mcs = !!value;
+  }
   var currentStatus = {
-    when: Date.now(),
-    who: who || [],
+    when: when || Date.now(),
+    who: who || {},
     minimumCleanSpeed: mcs
   };
   Object.assign(this.currentStatus, currentStatus);

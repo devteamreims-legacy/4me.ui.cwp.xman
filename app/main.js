@@ -1,5 +1,6 @@
 import api from './api';
 import services from './services';
+import socket from './socket';
 import flightList from './flight-list/';
 
 import _ from 'lodash';
@@ -24,6 +25,8 @@ var m = angular
       '4me.ui.cwp.xman.errors',
       '4me.ui.cwp.xman.notifications',
       '4me.ui.cwp.xman.status',
+      '4me.ui.cwp.xman.services',
+      '4me.ui.cwp.xman.socket',
       '4me.ui.cwp.xman.flight-list'
   ]);
 

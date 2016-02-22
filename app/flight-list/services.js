@@ -123,7 +123,7 @@ function xmanHighlighter() {
   function isFlightLevelHighlighted(flightLevel, flight) {
     // Accepts an array : [360, 380]
     // TODO : Or an object : {minFlightLevel: 360, maxFlightLevel: 380}
-    var currentFlightLevel = parseInt(_.get(flight, 'position.currentFlightLevel'));
+    var currentFlightLevel = parseInt(_.get(flight, 'position.vertical.currentFlightLevel'));
     if(_.isArray(flightLevel)) {
       return _.includes(flightLevel.map(parseInt), currentFlightLevel);
     }
@@ -135,11 +135,11 @@ function xmanHighlighter() {
   function hasPendingAction(flight) {
     let minCleanSpeed = _.get(flight, 'currentStatus.minimumCleanSpeed');
     let currentMach = _.get(flight, 'currentStatus.machReduction') || -1;
-    let proposal = _.get(flight, 'proposal', {});
-    let proposedMach = _.get(proposal, 'machReduction');
+    let advisory = _.get(flight, 'advisory', {});
+    let proposedMach = _.get(advisory, 'machReduction');
 
-    // If proposal is 0, then no pending action
-    if(_.isEmpty(proposal) || proposedMach === 0) {
+    // If advisory is 0, then no pending action
+    if(_.isEmpty(advisory) || proposedMach === 0) {
       return false;
     }
 
