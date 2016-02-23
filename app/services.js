@@ -279,6 +279,7 @@ function xmanQueryParameters(mySector, xmanDestinations) {
   service.get = () => parameters;
 
   service.setDestinations = (destinations) => {
+
     if(!_.isArray(destinations)) {
       destinations = [destinations];
     }
@@ -289,11 +290,11 @@ function xmanQueryParameters(mySector, xmanDestinations) {
     }
 
     if(_.isEmpty(destinations)) {
-      delete parameters.destinations;
+      delete parameters.destinationFilter;
       return;
     }
 
-    parameters.destinations = destinations;
+    parameters.destinationFilter = destinations;
     return;
   };
 

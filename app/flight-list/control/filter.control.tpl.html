@@ -4,6 +4,7 @@
   md-on-close="$ctrl.updateDestinationFilter()"
   multiple
   required
+  ng-if="$ctrl.showDestinationFilter()"
 >
   <md-option ng-repeat="dest in $ctrl.possibleDestinations track by $index" ng-value="dest">{{dest}}</md-option>
 </md-select>
@@ -11,6 +12,7 @@
   ng-checked="$ctrl.queryParams.geographicalFilter"
   ng-click="$ctrl.toggleGeographicalFilter()"
   ng-disabled="$ctrl.isGeographicalFilterDisabled()"
+  ng-if="$ctrl.showGeoAndVertFilters()"
 >
   Geographical filter
 </md-checkbox>
@@ -18,6 +20,7 @@
   ng-checked="$ctrl.queryParams.verticalFilter" 
   ng-click="$ctrl.toggleVerticalFilter()"
   ng-disabled="$ctrl.isVerticalFilterDisabled()"
+  ng-if="$ctrl.showGeoAndVertFilters()"
 >
   Vertical filter
 </md-checkbox>

@@ -89,8 +89,8 @@ function xmanHighlightControlController(xmanFlights, xmanHighlighter) {
 
 }
 
-xmanFilterControlController.$inject = ['xmanFlights', 'xmanDestinations', 'xmanQueryParameters'];
-function xmanFilterControlController(xmanFlights, xmanDestinations, xmanQueryParameters) {
+xmanFilterControlController.$inject = ['xmanFlights', 'xmanDestinations', 'xmanQueryParameters', 'mySector'];
+function xmanFilterControlController(xmanFlights, xmanDestinations, xmanQueryParameters, mySector) {
 
   // Defaults
   this.queryParams = xmanQueryParameters.get();
@@ -124,6 +124,10 @@ function xmanFilterControlController(xmanFlights, xmanDestinations, xmanQueryPar
     xmanQueryParameters.setDestinations(this.destinationFilter);
     xmanFlights.refresh();
   };
+
+  this.showDestinationFilter = () => _.isEmpty(mySector.get().sectors);
+
+  this.showGeoAndVertFilters = () => !_.isEmpty(mySector.get().sectors);
 
 }
 
