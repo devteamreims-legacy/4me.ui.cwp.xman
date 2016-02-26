@@ -8,10 +8,10 @@
 
 angular.module('4me.ui.cwp.xman.api', [])
 .constant('cwp.xman.api', {
-  rootPath: 'http://localhost:3001',
+  rootPath: 'http://' + window.location.hostname + ':3001',
   xman: {
     getAll: '/xman',
     setCurrentStatus: (flightId) => `/xman/${flightId}/setCurrentStatus`
   },
-  socket: 'http://localhost:3001'
+  socket: 'http://' + window.location.hostname + ':3001'
 });
