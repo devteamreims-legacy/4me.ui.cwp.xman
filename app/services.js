@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import {bindXmanEventsToSocket} from './socket-handler';
 
 /**
  * @ngdoc overview
@@ -20,76 +21,6 @@ angular.module('4me.ui.cwp.xman.services', [
 .constant('xmanDestinations', ['EGLL', 'LSZH'])
 .factory('xmanQueryParameters', xmanQueryParameters);
 
-var stubData = [
-{
-  flightId: 12345,
-  arcid: 'BAW164',
-  destination: 'LSZH',
-  position: {
-    currentFlightLevel: 283,
-    plannedFlightLevel: 360,
-    rangeToCop: 153,
-    when: Date.now() - 10*1000
-  },
-  cop: 'BLM',
-  estimatedTimeOverCop: Date.now() + 1000*60*12,
-  delay: 2,
-  proposal: {
-    machReduction: 2,
-    speed: null,
-    when: Date.now() - 1000*60*4,
-    targetTimeOverCop: Date.now() + 1000*60*15
-  },
-  currentStatus: {
-    when: Date.now(),
-    who: {
-      cwpId: 23,
-      sectors: ['UF', 'KF'],
-    },
-    machReduction: 1,
-    speed: null,
-    minimumCleanSpeed: true
-  }
-},{
-  flightId: 12346,
-  arcid: 'AFR1015',
-  destination: 'LSZH',
-  cop: 'BLM',
-  estimatedTimeOverCop: Date.now() + 1000*60*12,
-  delay: 12,
-  position: {
-    currentFlightLevel: 310,
-    plannedFlightLevel: 310,
-    rangeToCop: 160,
-    when: Date.now() - 9*1000
-  },
-  proposal: {
-    machReduction: 0,
-    speed: null,
-    when: Date.now() - 1000*60*4
-  },
-  currentStatus: {}
-},{
-  flightId: 12346,
-  arcid: 'MSR777',
-  destination: 'EGLL',
-  cop: 'ABNUR',
-  estimatedTimeOverCop: Date.now() + 1000*60*12,
-  delay: 48,
-  position: {
-    currentFlightLevel: 380,
-    plannedFlightLevel: 380,
-    rangeToCop: 160,
-    when: Date.now() - 9*1000
-  },
-  proposal: {
-    machReduction: 4,
-    speed: null,
-    when: Date.now() - 1000*60*4
-  },
-  currentStatus: {}
-}];
-
 /*eslint-disable angular/di-unused*/
 xmanFlights.$inject = ['$http', '$q', 'cwp.xman.api', 'cwp.xman.status', '$timeout', '$rootScope', 'xmanQueryParameters', 'xmanSocket'];
 function xmanFlights($http, $q, api, status, $timeout, $rootScope, xmanQueryParameters, xmanSocket) {
@@ -109,42 +40,27 @@ function xmanFlights($http, $q, api, status, $timeout, $rootScope, xmanQueryPara
   let handler = $rootScope.$on('fme:new-sectors', function() {
     console.log('Sectors changed for XMAN !!');
     console.log('Resetting query filters');
+    // Reset query param filters
     xmanQueryParameters.resetAfterNewSectors();
+
+    // Refresh socket subscriptions
+    service.refreshSocketSubscriptions();
+
+    // Refresh data from backend
     service.refresh();
   });
 
-  if(xmanSocket.on) {
-    xmanSocket.on('update_status', (data) => {
-      console.log(data);
+  service.refreshSocketSubscriptions = function() {
+    console.log('Refreshing xmanSocket subscriptions');
+    const {sectors, verticalFilter} = xmanQueryParameters.prepareParams();
 
-      if(isLoading === true) {
-        console.log('Got socket data while loading data, discard socket data');
-        return;
-      }
-
-      if(data.flightId === undefined) {
-        console.log('Got empty data from socket');
-        return;
-      }
-
-      // Check machReduction here
-
-      let flight = _.find(flights, f => f.flightId === data.flightId);
-      
-      if(_.isEmpty(flight)) {
-        console.log(`Flight with id ${data.flightId} is not tracked, dismissing ...`);
-        return;
-      }
-
-      
-
-      delete data.flightId;
-
-      flight.setCurrentStatus(data);
-
-
+    xmanSocket.emit('set_subscription_filter', {
+      sectors,
+      verticalFilter
     });
-  }
+  };
+
+  bindXmanEventsToSocket(xmanSocket, service);
 
   service.bootstrap = function() {
     if(!bootstrapped) {
@@ -167,12 +83,15 @@ function xmanFlights($http, $q, api, status, $timeout, $rootScope, xmanQueryPara
     // Fuck this shit, praise redux :(
     flights.length = 0;
 
+    // Set socket subscriptions
+    service.refreshSocketSubscriptions();
+
+    const httpParams = xmanQueryParameters.prepareParams();
+
     refreshPromise = $http.get(api.rootPath + api.xman.getAll, {
-      params: xmanQueryParameters.prepareParams()
+      params: httpParams
     })
     .then(function(res) {
-      console.log(res.data);
-      const data = _.clone(stubData);
       // Process data here
       _.map(res.data, f => flights.push(new XmanFlight(f)));
       
@@ -200,6 +119,7 @@ function xmanFlights($http, $q, api, status, $timeout, $rootScope, xmanQueryPara
 /*eslint-enable angular/di-unused*/
 
 function XmanFlight(flightData) {
+  console.log(flightData);
   Object.assign(this, flightData);
 }
 

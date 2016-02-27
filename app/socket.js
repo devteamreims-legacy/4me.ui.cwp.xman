@@ -58,6 +58,9 @@ function xmanSocket(socketFactory, api, status, $timeout) {
       connectedPromise = undefined;
       // Reset reconnectTimeout
       reconnectTimeout = 5000;
+
+      mySocket.emit('set_sector_filter', ['UR', 'XR']);
+      
     }, 1000);
     return true;
   });
