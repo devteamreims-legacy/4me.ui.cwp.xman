@@ -1,0 +1,22 @@
+<fme-xman-mach-buttons
+  ng-if="$ctrl.mode === 'mach'"
+  minimum-clean-speed="$ctrl.minimumCleanSpeed"
+  advised-mach-reduction="$ctrl.advisedMachReduction"
+  applied-mach-reduction="$ctrl.appliedMachReduction"
+  possible-machs="$ctrl.possibleMachs"
+  disable-undo-button="$ctrl.disableUndoButton"
+  set-mach="$ctrl.setMach(mach)"
+  toggle-mcs="$ctrl.toggleMcs()"
+  clear-mach="$ctrl.clearMach()"
+></fme-xman-mach-buttons>
+<fme-xman-speed-buttons
+  ng-if="$ctrl.mode === 'speed'"
+  minimum-clean-speed="$ctrl.minimumCleanSpeed"
+  advised-speed="$ctrl.advisedSpeed"
+  applied-speed="$ctrl.appliedSpeed"
+  possible-speeds="$ctrl.possibleSpeeds"
+  disable-undo-button="$ctrl.disableUndoButton"
+  set-speed="$ctrl.setSpeed(speed)"
+  toggle-mcs="$ctrl.toggleMcs()"
+  clear-speed="$ctrl.clearSpeed()"
+></fme-xman-speed-buttons>

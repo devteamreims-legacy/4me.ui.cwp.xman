@@ -1,9 +1,14 @@
-import api from './api';
-import services from './services';
-import socket from './socket';
-import flightList from './flight-list/';
-
 import _ from 'lodash';
+
+import components from './components/';
+
+import xmanNgRedux from './xmanRedux';
+import rootReducer from './reducers/';
+import thunk from 'redux-thunk';
+import createLogger from 'redux-logger';
+import { combineReducers } from 'redux';
+
+import { bootstrap } from './bootstrap';
 
 /**
  * @ngdoc overview
@@ -22,12 +27,8 @@ var m = angular
       '4me.core.organs.services',
       '4me.core.status',
       // Organ modules
-      '4me.ui.cwp.xman.errors',
-      '4me.ui.cwp.xman.notifications',
-      '4me.ui.cwp.xman.status',
-      '4me.ui.cwp.xman.services',
-      '4me.ui.cwp.xman.socket',
-      '4me.ui.cwp.xman.flight-list'
+      '4me.ui.cwp.xman.components',
+      'xmanNgRedux'
   ]);
 
 /**
@@ -80,10 +81,7 @@ function mappingRegistration(mainOrganService, $state, $injector) {
  *
  */
 
-angular.module('4me.ui.cwp.xman.errors', [
-  '4me.core.errors'
-])
-.factory('cwp.xman.errors', mappingErrors);
+m.factory('cwp.xman.errors', mappingErrors);
 
 mappingErrors.$inject = ['errors'];
 function mappingErrors(errors) {
@@ -96,10 +94,7 @@ function mappingErrors(errors) {
   return _.defaults(service, errors);
 }
 
-angular.module('4me.ui.cwp.xman.notifications', [
-  '4me.core.notifications'
-])
-.factory('cwp.xman.notifications', mappingNotifications);
+m.factory('cwp.xman.notifications', mappingNotifications);
 
 mappingNotifications.$inject = ['notifications'];
 function mappingNotifications(notifications) {
@@ -120,10 +115,7 @@ function mappingNotifications(notifications) {
 
 
 // We need another full service here, not some proxy status service
-angular.module('4me.ui.cwp.xman.status', [
-  '4me.core.status'
-])
-.factory('cwp.xman.status', mappingStatus);
+m.factory('cwp.xman.status', mappingStatus);
 
 mappingStatus.$inject = ['statusFactory'];
 function mappingStatus(statusFactory) {
@@ -132,11 +124,20 @@ function mappingStatus(statusFactory) {
 }
 
 
-xmanController.$inject = ['cwp.xman.errors', 'cwp.xman.notifications', '$state', 'ctrlroomManager'];
-function xmanController(errors, notifications, $state, xmanFlights) {
-  var xman = this;
+m.config(setupRedux);
 
-  xman.isLoading = function() {
-    return xmanFlights.isLoading();
-  };
+setupRedux.$inject = ['$xmanNgReduxProvider'];
+function setupRedux($xmanNgReduxProvider) {
+  const logger = createLogger();
+  $xmanNgReduxProvider.createStoreWith(rootReducer, [thunk, logger]);
+}
+
+m.run(bootstrapXman);
+
+bootstrapXman.$inject = ['$xmanNgRedux'];
+function bootstrapXman($xmanNgRedux) {
+
+  console.log($xmanNgRedux);
+
+  bootstrap($xmanNgRedux);
 }

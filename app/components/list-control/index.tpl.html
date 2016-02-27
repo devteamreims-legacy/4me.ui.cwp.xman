@@ -1,0 +1,20 @@
+<md-checkbox
+  ng-checked="$ctrl.highlightPendingAction"
+  ng-click="$ctrl.togglePendingAction()"
+>
+  Highlight flights pending action
+</md-checkbox>
+<md-checkbox
+  ng-checked="$ctrl.queryParams.geographicalFilter"
+  ng-click="$ctrl.toggleGeographicalFilter()"
+  ng-disabled="$ctrl.disableAll"
+>
+  Geographical filter
+</md-checkbox>
+<md-checkbox
+  ng-checked="$ctrl.queryParams.verticalFilter" 
+  ng-click="$ctrl.toggleVerticalFilter()"
+  ng-disabled="$ctrl.disableAll || $ctrl.isVerticalFilterDisabled()"
+>
+  Vertical filter
+</md-checkbox>
