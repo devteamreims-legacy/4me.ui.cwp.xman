@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import {refreshFullList} from '../../actions/refresh-flight-list';
 import xmanNgRedux from '../../xmanRedux';
 
 /**

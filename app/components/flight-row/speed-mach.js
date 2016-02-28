@@ -135,7 +135,7 @@ function speedMachController($xmanNgRedux, $scope, myCwp, mySector) {
       Object.assign(modeBindings, {
         advisedSpeed: _.get(flight, 'advisory.speed', -1),
         appliedSpeed: _.get(flight, 'currentStatus.speed'),
-        possibleSpeeds: [240, 250, 260, 270, 280]
+        possibleSpeeds: [240, 250, 260, 270, 280].reverse()
       });
 
       // Create callbacks

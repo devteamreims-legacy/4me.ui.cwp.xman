@@ -9,7 +9,7 @@ import {
 
 const defaultState = {
   pendingAction: true,
-  toneDown: {path: 'destination', value: 'EGLL'}
+  toneDown: {}
 };
 
 export default function(state = defaultState, action) {

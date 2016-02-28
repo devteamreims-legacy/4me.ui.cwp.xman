@@ -7,6 +7,19 @@ export const XMAN_REFRESH_FAIL = 'XMAN_REFRESH_FAIL';
 import api from '../api';
 import axios from 'axios';
 
+import {
+  setSubscriptionFilter
+} from '../socket';
+
+import {
+  getVerticalFilter,
+  getGeographicalFilter
+} from '../selectors/list-filter';
+
+import {
+  getQueryParams
+} from '../selectors/flight-list';
+
 // Refresh the full xman flight list
 // Uses redux thunk
 export function refreshFullList() {
@@ -23,19 +36,25 @@ export function refreshFullList() {
 
     const apiUrl = api.rootPath + api.xman.getAll;
 
-    axios.get(apiUrl)
-      .then((response) => {
-        console.log(response.data);
-        dispatch(complete(response.data));
+    const queryParams = getQueryParams(getState());
+
+    console.log('Loading XMAN flights with these params :');
+    console.log(queryParams);
+    
+    return axios.get(apiUrl, {
+      params: queryParams
+    }).then((response) => {
+        return dispatch(complete(response.data));
       })
       .catch((error) => {
-        dispatch(fail(error.data));
+        return dispatch(fail(error));
       });
   }
 }
 
 
-export function fail(error = '') {
+export function fail(rawError) {
+  const error = rawError.message || rawError.statusText || 'Unknown error';
   return {
     type: XMAN_REFRESH_FAIL,
     error

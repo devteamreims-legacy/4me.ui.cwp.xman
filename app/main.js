@@ -10,6 +10,11 @@ import { combineReducers } from 'redux';
 
 import { bootstrap } from './bootstrap';
 
+import {
+  onSectorChange,
+  onCwpChange
+} from './actions/who-am-i';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.cwp.xman
@@ -26,6 +31,8 @@ var m = angular
       '4me.core.errors',
       '4me.core.organs.services',
       '4me.core.status',
+      '4me.core.cwp.services',
+      '4me.core.sectors.services',
       // Organ modules
       '4me.ui.cwp.xman.components',
       'xmanNgRedux'
@@ -128,16 +135,23 @@ m.config(setupRedux);
 
 setupRedux.$inject = ['$xmanNgReduxProvider'];
 function setupRedux($xmanNgReduxProvider) {
-  const logger = createLogger();
+  const ignoreFilter = (getState, action) => {
+    const filterActionsContaining = 'TONE_DOWN';
+
+    return !_.includes(action.type, filterActionsContaining);
+  }
+
+  const logger = createLogger({
+    predicate: ignoreFilter
+  });
   $xmanNgReduxProvider.createStoreWith(rootReducer, [thunk, logger]);
 }
 
 m.run(bootstrapXman);
 
-bootstrapXman.$inject = ['$xmanNgRedux'];
-function bootstrapXman($xmanNgRedux) {
+bootstrapXman.$inject = ['$xmanNgRedux', '$rootScope', 'myCwp', 'mySector'];
+function bootstrapXman($xmanNgRedux, $rootScope, myCwp, mySector) {
+  const store = $xmanNgRedux;
 
-  console.log($xmanNgRedux);
-
-  bootstrap($xmanNgRedux);
+  bootstrap(store, $rootScope, myCwp, mySector);
 }

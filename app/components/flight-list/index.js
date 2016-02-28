@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {refreshFullList} from '../../actions/refresh-flight-list';
+import {refreshFullList} from '../../actions/flight-list';
 import xmanNgRedux from '../../xmanRedux';
 
 /**
@@ -20,14 +20,13 @@ export default angular.module('4me.ui.cwp.xman.components.flight-list', [xmanNgR
 flightListController.$inject = ['$xmanNgRedux', '$scope'];
 function flightListController($xmanNgRedux, $scope) {
 
-  let unsubscribe = $xmanNgRedux.connect(mapStateToThis)(this);
-  $scope.$on('$destroy', unsubscribe);
-
-  function mapStateToThis(state) {
-    return {
+  const mapStateToThis = (state) => ({
       isLoading: state.flightList.isLoading,
       flights: state.flightList.flights,
       status: state.status,
-    }
-  }
+  });
+
+  let unsubscribe = $xmanNgRedux.connect(mapStateToThis)(this);
+  $scope.$on('$destroy', unsubscribe);
+
 }
