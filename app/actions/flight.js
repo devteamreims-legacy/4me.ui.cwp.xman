@@ -6,6 +6,10 @@ export const XMAN_SET_MCS = 'XMAN_SET_MCS';
 
 export const XMAN_CLEAR_ACTION = 'XMAN_CLEAR_ACTION';
 
+import {
+  sendXmanAction
+} from '../socket';
+
 
 function setMachAction(flightId, machReduction, who = {}) {
   return {
@@ -52,10 +56,22 @@ export function setMach(flightId, machReduction, who) {
       return;
     }
 
-    // Emit action via socket
+    
 
     // Dispatch action
     dispatch(setMachAction(flightId, machReduction, who));
+
+
+    // Build 'status' object
+    const status = {
+      who,
+      xmanAction: {
+        machReduction
+      }
+    };
+
+    // Emit action via socket
+    sendXmanAction(flightId, status);
   }
 }
 
@@ -69,10 +85,19 @@ export function setSpeed(flightId, speed, who) {
       return;
     }
 
-    // Emit action via socket
-
     // Dispatch action
     dispatch(setSpeedAction(flightId, speed, who));
+
+    // Build 'status' object
+    const status = {
+      who,
+      xmanAction: {
+        speed
+      }
+    };
+
+    // Emit action via socket
+    sendXmanAction(flightId, status);
   }
 }
 
@@ -85,10 +110,20 @@ export function setMcs(flightId, mcs, who) {
       return;
     }
 
-    // Emit via socket
 
     // Dispatch action
     dispatch(setMcsAction(flightId, mcs, who));
+
+    // Build 'status' object
+    const status = {
+      who,
+      xmanAction: {
+        minimumCleanSpeed: mcs
+      }
+    };
+
+    // Emit action via socket
+    sendXmanAction(flightId, status);
 
   }
 }
@@ -103,9 +138,21 @@ export function clearAction(flightId, who) {
       return;
     }
 
-    // Emit action via socket
 
     // Dispatch action
     dispatch(clearActionAction(flightId, who));
+
+    // Build 'status' object
+    const status = {
+      who,
+      xmanAction: {
+        machReduction: null,
+        speed: null,
+        minimumCleanSpeed: null
+      }
+    };
+
+    // Emit action via socket
+    sendXmanAction(flightId, status);
   }
 }

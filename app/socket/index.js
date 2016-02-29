@@ -29,7 +29,7 @@ export function getSocket() {
 }
 
 export function setSubscriptionFilter(data) {
-  let {sectors = [], verticalFilter = true} = data;
+  let {sectors = [], verticalFilter = false} = data;
 
   const socket = getSocket();
 
@@ -49,20 +49,45 @@ export function setSubscriptionFilter(data) {
   }
 }
 
+export function sendXmanAction(flightId, status) {
+  const socket = getSocket();
+
+  if(!socket || !socket.emit) {
+    console.error('xmanSocket: sendXmanAction: Socket is undefined !!');
+    return;
+  }
+
+  console.log(`Socket: Updating flight with id ${flightId}`);
+  socket.emit('set_action', Object.assign({}, {flightId}, status));
+  
+}
+
+import {
+  removeFlights,
+  addFlights,
+  updateFlights
+} from '../actions/flight-list';
+
 export function attachHandlerToSocket(dispatch, socket) {
   socket.on('add_flights', (data) => {
-    console.log('ADD_FLIGHTS');
+    console.log('XMAN Socket : add_flights');
     console.log(data);
+
+    dispatch(addFlights(data));
   });
 
   socket.on('remove_flights', (data) => {
-    console.log('REMOVE_FLIGHTS');
+    console.log('XMAN Socket : remove_flights');
     console.log(data);
+
+    dispatch(removeFlights(data));
   });
 
   socket.on('update_flights', (data) => {
     console.log('UPDATE_FLIGHTS');
     console.log(data);
+
+    dispatch(updateFlights(data));
   });
 
 }

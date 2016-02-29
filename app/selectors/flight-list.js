@@ -18,3 +18,7 @@ export const getQueryParams = (state) => {
 
   return {sectors};
 };
+
+export const getFlights = (state) => state.flightList.flights;
+
+export const getKnownFlightIds = (state) => _.map(getFlights(state), f => f.flightId);

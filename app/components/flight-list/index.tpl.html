@@ -29,7 +29,7 @@
 <md-divider></md-divider>
 <div layout="column" layout-fill>
   <fme-xman-flight-row
-    ng-repeat="flight in $ctrl.flights track by $index"
+    ng-repeat="flight in $ctrl.flights track by flight.flightId"
     flight-id="flight.flightId"
     flex
   ></fme-xman-flight-row>
