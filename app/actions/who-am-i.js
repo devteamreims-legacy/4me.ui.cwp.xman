@@ -34,9 +34,6 @@ export function onSectorChange(sectors) {
 
     // Refresh XMAN list
     dispatch(refreshFullList());
-
-    // Inform our socket
-    setSubscriptionFilter({sectors});
   };
 }
 

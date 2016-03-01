@@ -5,9 +5,7 @@ import {
   XMAN_REFRESH_START,
   XMAN_REFRESH_COMPLETE,
   XMAN_REFRESH_FAIL,
-  XMAN_ADD_FLIGHTS,
-  XMAN_UPDATE_FLIGHTS,
-  XMAN_REMOVE_FLIGHTS
+  XMAN_UPDATE_FLIGHT
 } from '../actions/flight-list';
 
 import {
@@ -25,6 +23,14 @@ import {
 import {
   XMAN_SOCKET_DISCONNECTED
 } from '../actions/socket';
+
+import {
+  getFlightById
+} from '../selectors/flight';
+
+import {
+  getFlights
+} from '../selectors/flight-list';
 
 const defaultState = {
   isLoading: false,
@@ -75,40 +81,31 @@ export default function flightListReducer(state = defaultState, action) {
       return merge({}, state, {
         verticalFilter: action.value
       });
-    case XMAN_REMOVE_FLIGHTS:
+    case XMAN_UPDATE_FLIGHT:
       return Object.assign({}, state, {
-        flights: flightsWithout(state.flights, action.flightIds)
-      });
-    case XMAN_ADD_FLIGHTS:
-      return Object.assign({}, state, {
-        flights: [
-          ...state.flights,
-          ...action.flights
-        ]
-      });
-    case XMAN_UPDATE_FLIGHTS:
-      return Object.assign({}, state, {
-        flights: updateFlights(state.flights, action.flights)
+        flights: updateFlights(state, action.flight)
       });
   }
   return state;
 }
 
-function updateFlights(oldFlights, newData) {
+function updateFlights(state, flight) {
 
-  const mergeNewData = (oldFlight) => {
+  const updatedFlightId = _.get(flight, 'flightId', null);
 
-    const flightId = oldFlight.flightId;
-    const newFlight = _.find(newData, f => f.flightId === flightId);
+  
+  const oldFlightIndex = _.findIndex(state.flights, f => f.flightId === updatedFlightId);
+  const oldFlight = state.flights[oldFlightIndex];
 
-    if(_.isEmpty(newData)) {
-      return oldFlights;
-    }
 
-    return Object.assign({}, oldFlight, newFlight);
-  }
+  console.log('Updating flight, index is : ' + oldFlightIndex);
+  console.log(oldFlight);
 
-  return _.map(oldFlights, mergeNewData);
+  return [
+    ...state.flights.slice(0, oldFlightIndex),
+    flight,
+    ...state.flights.slice(oldFlightIndex + 1)
+  ];
 }
 
 function flightsWithout(flights, flightIds = []) {

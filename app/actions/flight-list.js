@@ -4,9 +4,7 @@ export const XMAN_REFRESH_START = 'XMAN_REFRESH_START';
 export const XMAN_REFRESH_COMPLETE = 'XMAN_REFRESH_COMPLETE';
 export const XMAN_REFRESH_FAIL = 'XMAN_REFRESH_FAIL';
 
-export const XMAN_ADD_FLIGHTS = 'XMAN_ADD_FLIGHTS';
-export const XMAN_UPDATE_FLIGHTS = 'XMAN_UPDATE_FLIGHTS';
-export const XMAN_REMOVE_FLIGHTS = 'XMAN_REMOVE_FLIGHTS';
+export const XMAN_UPDATE_FLIGHT = 'XMAN_UPDATE_FLIGHT';
 
 import api from '../api';
 import axios from 'axios';
@@ -31,10 +29,17 @@ export function refreshFullList() {
     // Check if loading
     let isLoading = getState().flightList.isLoading;
 
+    // Here we should abort current request and restart one
+    // This is not currently implemented in axios
+    // See here : https://github.com/mzabriskie/axios/issues/50
+
+    // Current workaround is to let first request fly and to just resend one
+    /*
     if(isLoading) {
       console.log('Already loading !!');
       return;
     }
+    */
 
     dispatch(start());
 
@@ -82,24 +87,11 @@ export function complete(flights = []) {
   };
 }
 
-export function addFlightsAction(flights = []) {
-  return {
-    type: XMAN_ADD_FLIGHTS,
-    flights
-  };
-}
 
-export function updateFlightsAction(flights = []) {
+export function updateFlightAction(flight = {}) {
   return {
-    type: XMAN_UPDATE_FLIGHTS,
-    flights
-  };
-}
-
-export function removeFlightsAction(flightIds = []) {
-  return {
-    type: XMAN_REMOVE_FLIGHTS,
-    flightIds
+    type: XMAN_UPDATE_FLIGHT,
+    flight
   };
 }
 
@@ -107,95 +99,23 @@ import {
   getKnownFlightIds
 } from '../selectors/flight-list';
 
-export function removeFlights(flightIds = []) {
+export function updateFlight(flight) {
   return (dispatch, getState) => {
-    if(_.isEmpty(flightIds)) {
-      console.log('Trying to remove no flights');
-      return;
-    }
-    const untrackedFlightIds = _.without(flightIds, ...getKnownFlightIds(getState()));
-    
-    if(!_.isEmpty(untrackedFlightIds)) {
-      console.log('Trying to remove unknown flights : ');
-      console.log(untrackedFlightIds);
-    }
-
-    const flightIdsToRemove = _.without(flightIds, ...untrackedFlightIds);
-
-    if(_.isEmpty(flightIdsToRemove)) {
-      console.log('Nothing left to remove after filtering unknown flights');
-      return;
-    }
-
-    return dispatch(removeFlightsAction(flightIdsToRemove));
-
-  }
-}
-
-export function addFlights(flights = []) {
-  return (dispatch, getState) => {
-    if(_.isEmpty(flights)) {
-      console.log('Trying to add no flights');
+    if(_.isEmpty(flight)) {
+      console.log('XMAN : updateFlight : Empty data provided !');
       return;
     }
 
     const knownFlightIds = getKnownFlightIds(getState());
+    const updatedFlightId = _.get(flight, 'flightId', null);
+    const isKnown = _.includes(knownFlightIds, updatedFlightId);
 
-    const isAlreadyKnown = (flight) => _.includes(knownFlightIds, flight.flightId);
-
-    const actualFlightsToAdd = _(flights)
-      .reject(isAlreadyKnown)
-      .value();
-
-    const leftovers = _(flights)
-      .filter(isAlreadyKnown)
-      .value();
-
-    console.log('XMAN addFlights : ');
-    console.log(actualFlightsToAdd);
-
-    if(!_.isEmpty(leftovers)) {
-      console.log('Some flights were already known');
-      console.log(leftovers);
-    }
-
-    if(!_.isEmpty(actualFlightsToAdd)) {
-      console.log('Trying to add actual flights !');
-      return dispatch(addFlightsAction(actualFlightsToAdd));
-    }
-  };
-}
-
-export function updateFlights(flights = []) {
-  return (dispatch, getState) => {
-    if(_.isEmpty(flights)) {
-      console.log('Trying to update no flights');
+    if(!isKnown) {
+      console.log(`XMAN : updateFlight : Unknown flight id : ${updatedFlightId}`);
       return;
     }
 
-    const knownFlightIds = getKnownFlightIds(getState());
-
-    const isAlreadyKnown = (flight) => _.includes(knownFlightIds, flight.flightId);
-
-    const actualFlightsToUpdate = _(flights)
-      .filter(isAlreadyKnown)
-      .value();
-
-    const leftovers = _(flights)
-      .reject(isAlreadyKnown)
-      .value();
-
-    console.log('XMAN updateFlights : ');
-    console.log(actualFlightsToUpdate);
-
-    if(!_.isEmpty(leftovers)) {
-      console.log('Some flights were unknown');
-      console.log(leftovers);
-    }
-
-    if(!_.isEmpty(actualFlightsToUpdate)) {
-      console.log('Trying to update actual flights !');
-      return dispatch(updateFlightsAction(actualFlightsToUpdate));
-    }
+      
+    return dispatch(updateFlightAction(flight));
   };
 }

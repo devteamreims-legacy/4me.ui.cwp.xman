@@ -5,6 +5,7 @@ import components from './components/';
 import xmanNgRedux from './xmanRedux';
 import rootReducer from './reducers/';
 import thunk from 'redux-thunk';
+import deepFreeze from 'redux-freeze';
 import createLogger from 'redux-logger';
 import { combineReducers } from 'redux';
 
@@ -144,7 +145,7 @@ function setupRedux($xmanNgReduxProvider) {
   const logger = createLogger({
     predicate: ignoreFilter
   });
-  $xmanNgReduxProvider.createStoreWith(rootReducer, [thunk, logger]);
+  $xmanNgReduxProvider.createStoreWith(rootReducer, [thunk, deepFreeze, logger]);
 }
 
 m.run(bootstrapXman);

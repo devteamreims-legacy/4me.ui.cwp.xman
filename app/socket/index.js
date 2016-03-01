@@ -63,31 +63,24 @@ export function sendXmanAction(flightId, status) {
 }
 
 import {
-  removeFlights,
-  addFlights,
-  updateFlights
+  complete,
+  updateFlight
 } from '../actions/flight-list';
 
 export function attachHandlerToSocket(dispatch, socket) {
-  socket.on('add_flights', (data) => {
-    console.log('XMAN Socket : add_flights');
-    console.log(data);
-
-    dispatch(addFlights(data));
-  });
-
-  socket.on('remove_flights', (data) => {
-    console.log('XMAN Socket : remove_flights');
-    console.log(data);
-
-    dispatch(removeFlights(data));
-  });
 
   socket.on('update_flights', (data) => {
     console.log('UPDATE_FLIGHTS');
     console.log(data);
 
-    dispatch(updateFlights(data));
+    dispatch(complete(data));
+  });
+
+  socket.on('update_flight', (data) => {
+    console.log('UPDATE_FLIGHT');
+    console.log(data);
+
+    dispatch(updateFlight(data));
   });
 
 }
