@@ -137,7 +137,7 @@ m.config(setupRedux);
 setupRedux.$inject = ['$xmanNgReduxProvider'];
 function setupRedux($xmanNgReduxProvider) {
   const ignoreFilter = (getState, action) => {
-    const filterActionsContaining = 'TONE_DOWN';
+    const filterActionsContaining = 'XMAN';
 
     return !_.includes(action.type, filterActionsContaining);
   }
