@@ -17,7 +17,10 @@ import {
  * # XMAN : Small status component
  *
  */
-export default angular.module('4me.ui.cwp.xman.components.status', [xmanNgRedux])
+export default angular.module('4me.ui.cwp.xman.components.status', [
+  xmanNgRedux,
+  'angularMoment'
+])
 .component('fmeXmanStatus', {
   restrict: 'E',
   controller: statusController,
