@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import components from './components/';
+import xmanComponents from './components/';
 
 import xmanNgRedux from './xmanRedux';
 import rootReducer from './reducers/';
@@ -35,8 +35,8 @@ var m = angular
       '4me.core.cwp.services',
       '4me.core.sectors.services',
       // Organ modules
-      '4me.ui.cwp.xman.components',
-      'xmanNgRedux'
+      xmanComponents,
+      xmanNgRedux
   ]);
 
 /**

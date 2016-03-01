@@ -8,7 +8,6 @@ export const XMAN_SOCKET_DISCONNECTED = 'XMAN_SOCKET_DISCONNECTED';
 
 export function socketConnected() {
   return (dispatch, getState) => {
-    // First dispatch 
     return dispatch(refreshFullList())
       .then(() => dispatch(socketConnectedAction()))
   };

@@ -108,6 +108,7 @@ export function updateFlight(flight) {
 
     const knownFlightIds = getKnownFlightIds(getState());
     const updatedFlightId = _.get(flight, 'flightId', null);
+    
     const isKnown = _.includes(knownFlightIds, updatedFlightId);
 
     if(!isKnown) {
