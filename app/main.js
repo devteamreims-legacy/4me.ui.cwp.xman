@@ -142,10 +142,10 @@ function setupRedux($xmanNgReduxProvider) {
     return !_.includes(action.type, filterActionsContaining);
   }
 
-  const logger = createLogger({
+  /*const logger = createLogger({
     predicate: ignoreFilter
-  });
-  $xmanNgReduxProvider.createStoreWith(rootReducer, [thunk, deepFreeze, logger]);
+  });*/
+  $xmanNgReduxProvider.createStoreWith(rootReducer, [thunk, deepFreeze]);
 }
 
 m.run(bootstrapXman);
