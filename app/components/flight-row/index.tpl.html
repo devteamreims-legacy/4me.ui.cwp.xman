@@ -49,8 +49,11 @@
     layout-align="center center"
     class="cop"
   >
-    {{$ctrl.flight.cop}}
-    <span class="cop-times">12:45&#8594;12:48</span>
+    <fme-xman-cop
+      cop-name="$ctrl.flight.cop"
+      target-time="$ctrl.flight.advisory.targetTime"
+      estimated-time="$ctrl.flight.advisory.estimatedTime"
+    ></fme-xman-cop>
   </div>
   <div
     flex="35"

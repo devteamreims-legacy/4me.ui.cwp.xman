@@ -5,6 +5,7 @@ import xmanNgRedux from '../../xmanRedux';
 import delay from './delay';
 import appliedBy from './applied-by';
 import speedMach from './speed-mach';
+import cop from './cop';
 
 import {
   getFlightById,
@@ -29,7 +30,8 @@ export default angular.module('4me.ui.cwp.xman.components.flight-row', [
   xmanNgRedux,
   delay,
   appliedBy,
-  speedMach
+  speedMach,
+  cop,
 ])
 .component('fmeXmanFlightRow', {
   restrict: 'E',
