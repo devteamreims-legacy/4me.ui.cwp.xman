@@ -91,10 +91,10 @@ export default function flightListReducer(state = defaultState, action) {
 
 function updateFlights(state, flight) {
 
-  const updatedFlightId = _.get(flight, 'flightId', null);
+  const updatedFlightId = _.get(flight, 'ifplId', null);
 
-  
-  const oldFlightIndex = _.findIndex(state.flights, f => f.flightId === updatedFlightId);
+
+  const oldFlightIndex = _.findIndex(state.flights, f => f.ifplId === updatedFlightId);
   const oldFlight = state.flights[oldFlightIndex];
 
 
@@ -108,13 +108,13 @@ function updateFlights(state, flight) {
   ];
 }
 
-function flightsWithout(flights, flightIds = []) {
-  return _.reject(flights, f => _.includes(flightIds, f.flightId));
+function flightsWithout(flights, ifplIds = []) {
+  return _.reject(flights, f => _.includes(ifplIds, f.ifplId));
 }
 
 function flightByFlightReducer(action) {
   return (flight) => {
-    if(!action.flightId || flight.flightId !== action.flightId) {
+    if(!action.ifplId || flight.ifplId !== action.ifplId) {
       return flight;
     }
     switch(action.type) {

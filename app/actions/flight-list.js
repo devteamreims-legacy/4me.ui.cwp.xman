@@ -52,7 +52,7 @@ export function refreshFullList() {
 
     // Update socket subscription
     setSubscriptionFilter(queryParams);
-    
+
     return axios.get(apiUrl, {
       params: queryParams
     }).then((response) => {
@@ -107,8 +107,8 @@ export function updateFlight(flight) {
     }
 
     const knownFlightIds = getKnownFlightIds(getState());
-    const updatedFlightId = _.get(flight, 'flightId', null);
-    
+    const updatedFlightId = _.get(flight, 'ifplId', null);
+
     const isKnown = _.includes(knownFlightIds, updatedFlightId);
 
     if(!isKnown) {
@@ -116,7 +116,7 @@ export function updateFlight(flight) {
       return;
     }
 
-      
+
     return dispatch(updateFlightAction(flight));
   };
 }

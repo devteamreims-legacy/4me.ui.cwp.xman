@@ -49,7 +49,7 @@ export function setSubscriptionFilter(data) {
   }
 }
 
-export function sendXmanAction(flightId, status) {
+export function sendXmanAction(ifplId, status) {
   const socket = getSocket();
 
   if(!socket || !socket.emit) {
@@ -57,9 +57,9 @@ export function sendXmanAction(flightId, status) {
     return;
   }
 
-  console.log(`Socket: Updating flight with id ${flightId}`);
-  socket.emit('set_action', Object.assign({}, {flightId}, status));
-  
+  console.log(`Socket: Updating flight with id ${ifplId}`);
+  socket.emit('set_action', Object.assign({}, {ifplId}, status));
+
 }
 
 import {

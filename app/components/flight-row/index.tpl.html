@@ -26,15 +26,15 @@
     layout-align="center"
     class="delay"
   >
-    <fme-xman-delay delay="{{$ctrl.flight.delay}}" />
+    <fme-xman-delay delay="{{$ctrl.totalDelay}}" />
   </div>
   <div
-    flex="5" 
+    flex="5"
     layout="row"
     layout-align="center"
     class="flight-level"
   >
-    <md-button 
+    <md-button
       class="xman-selector-button"
       ng-class="$ctrl.flightLevelButtonClasses()"
       ng-mouseenter="$ctrl.toneDownFlightLevel($ctrl.flight.position.vertical.currentFlightLevel)"
@@ -58,7 +58,7 @@
     layout="row"
     layout-align="center center"
   >
-    <fme-xman-speed-mach flight-id="$ctrl.flight.flightId" />
+    <fme-xman-speed-mach ifpl-id="$ctrl.flight.ifplId" />
   </div>
   <div
     flex="20"

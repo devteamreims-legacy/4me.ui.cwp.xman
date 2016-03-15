@@ -9,7 +9,8 @@ import speedMach from './speed-mach';
 import {
   getFlightById,
   isFlightHighlighted,
-  isFlightTonedDown
+  isFlightTonedDown,
+  getTotalDelay,
 } from '../../selectors/flight';
 
 import {
@@ -34,7 +35,7 @@ export default angular.module('4me.ui.cwp.xman.components.flight-row', [
   restrict: 'E',
   controller: xmanFlightRowController,
   bindings: {
-    flightId: '='
+    ifplId: '='
   },
   templateUrl: 'views/cwp.xman/app/components/flight-row/index.tpl.html'
 })
@@ -47,17 +48,19 @@ function xmanFlightRowController($xmanNgRedux, $scope) {
 
   const mapStateToThis = (state) => {
 
-    const flightId = $ctrl.flightId;
+    const ifplId = $ctrl.ifplId;
 
-    const flight = getFlightById(state, flightId);
+    const flight = getFlightById(state, ifplId);
 
-    const isHighlighted = isFlightHighlighted(state, flightId);
-    const isTonedDown = isFlightTonedDown(state, flightId);
+    const isHighlighted = isFlightHighlighted(state, ifplId);
+    const isTonedDown = isFlightTonedDown(state, ifplId);
+    const totalDelay = getTotalDelay(state, ifplId);
 
     return {
       isHighlighted,
       isTonedDown,
-      flight
+      flight,
+      totalDelay,
     };
   };
 

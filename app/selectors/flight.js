@@ -4,17 +4,21 @@ import { createSelector } from 'reselect';
 
 const flights = state => state.flightList.flights;
 
-const advisedSpeed = (state, flightId) => _.get(getFlightById(state, flightId), 'advisory.speed', null);
-const advisedMach = (state, flightId) => _.get(getFlightById(state, flightId), 'advisory.machReduction', null);
+const advisedSpeed = (state, ifplId) => _.get(getFlightById(state, ifplId), 'advisory.speed', null);
+const advisedMach = (state, ifplId) => _.get(getFlightById(state, ifplId), 'advisory.machReduction', null);
 
-const appliedSpeed = (state, flightId) => _.get(getFlightById(state, flightId), 'currentStatus.speed', null);
-const appliedMach = (state, flightId) => _.get(getFlightById(state, flightId), 'currentStatus.machReduction', null);
+const appliedSpeed = (state, ifplId) => _.get(getFlightById(state, ifplId), 'currentStatus.speed', null);
+const appliedMach = (state, ifplId) => _.get(getFlightById(state, ifplId), 'currentStatus.machReduction', null);
 
-const minimumCleanSpeed = (state, flightId) => _.get(getFlightById(state, flightId), 'currentStatus.minimumCleanSpeed', false);
+const minimumCleanSpeed = (state, ifplId) => _.get(getFlightById(state, ifplId), 'currentStatus.minimumCleanSpeed', false);
 
-export function getFlightById(state, flightId) {
-  return _.find(flights(state), f => f.flightId === flightId);
+export function getFlightById(state, ifplId) {
+  return _.find(flights(state), f => f.ifplId === ifplId);
 }
+
+export const getTotalDelay = (state, ifplId) => {
+  return Math.floor(_.get(getFlightById(state, ifplId), 'delay', 0) / 60);
+};
 
 
 export function isActionComplete(advisedSpeed, appliedSpeed, minimumCleanSpeed) {
@@ -37,33 +41,33 @@ export function isActionComplete(advisedSpeed, appliedSpeed, minimumCleanSpeed) 
   return false;
 }
 
-export function isFlightHighlighted(state, flightId) {
-  const flight = getFlightById(state, flightId);
-  
+export function isFlightHighlighted(state, ifplId) {
+  const flight = getFlightById(state, ifplId);
+
   if(_.isEmpty(flight)) {
     return false;
   }
 
-  const mcs = minimumCleanSpeed(state, flightId);
+  const mcs = minimumCleanSpeed(state, ifplId);
 
   // Establish mode
   let advised;
   let applied;
 
-  if(advisedSpeed(state, flightId) !== null) {
+  if(advisedSpeed(state, ifplId) !== null) {
     // Assume speed mode
-    advised = advisedSpeed(state, flightId);
-    applied = appliedSpeed(state, flightId);
+    advised = advisedSpeed(state, ifplId);
+    applied = appliedSpeed(state, ifplId);
   } else {
-    advised = -advisedMach(state, flightId);
-    applied = -appliedMach(state, flightId);
+    advised = -advisedMach(state, ifplId);
+    applied = -appliedMach(state, ifplId);
   }
 
   return state.highlighter.pendingAction && !isActionComplete(advised, applied, mcs);
 }
 
-export function isFlightTonedDown(state, flightId) {
-  const flight = getFlightById(state, flightId);
+export function isFlightTonedDown(state, ifplId) {
+  const flight = getFlightById(state, ifplId);
 
   const filter = state.highlighter.toneDown;
 

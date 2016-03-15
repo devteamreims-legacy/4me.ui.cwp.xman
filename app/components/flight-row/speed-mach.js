@@ -26,7 +26,7 @@ export default angular.module('4me.ui.cwp.xman.flight-row.speed-mach', [xmanNgRe
   restrict: 'E',
   controller: speedMachController,
   bindings: {
-    flightId: '<'
+    ifplId: '<'
   },
   templateUrl: 'views/cwp.xman/app/components/flight-row/speed-mach.tpl.html'
 })
@@ -75,9 +75,9 @@ function speedMachController($xmanNgRedux, $scope, myCwp, mySector) {
   });
 
   const mapStateToThis = (state) => {
-    const flightId = this.flightId;
-    const flight = getFlightById(state, flightId);
-    
+    const ifplId = this.ifplId;
+    const flight = getFlightById(state, ifplId);
+
     const minimumCleanSpeed = !!_.get(flight, 'currentStatus.minimumCleanSpeed');
     const currentSpeed = _.get(flight, 'currentStatus.speed', null);
     const currentMachReduction = _.get(flight, 'currentStatus.machReduction', null);
@@ -116,9 +116,9 @@ function speedMachController($xmanNgRedux, $scope, myCwp, mySector) {
       });
 
       // Create callbacks
-      const setMach = (machReduction) => this.dispatch(setMachAction(flightId, machReduction, getWho()));
-      const clearMach = () => this.dispatch(clearAction(flightId, getWho()));
-      const toggleMcs = () => this.dispatch(setMcsAction(flightId, !minimumCleanSpeed, getWho()));
+      const setMach = (machReduction) => this.dispatch(setMachAction(ifplId, machReduction, getWho()));
+      const clearMach = () => this.dispatch(clearAction(ifplId, getWho()));
+      const toggleMcs = () => this.dispatch(setMcsAction(ifplId, !minimumCleanSpeed, getWho()));
 
       const callbacks = {
         setMach,
@@ -130,7 +130,7 @@ function speedMachController($xmanNgRedux, $scope, myCwp, mySector) {
 
       Object.assign(modeBindings, callbacks);
 
-    } else { 
+    } else {
 
       Object.assign(modeBindings, {
         advisedSpeed: _.get(flight, 'advisory.speed', -1),
@@ -139,9 +139,9 @@ function speedMachController($xmanNgRedux, $scope, myCwp, mySector) {
       });
 
       // Create callbacks
-      const setSpeed = (speed) => this.dispatch(setSpeedAction(flightId, speed, getWho()));
-      const clearSpeed = () => this.dispatch(clearAction(flightId, getWho()));
-      const toggleMcs = () => this.dispatch(setMcsAction(flightId, !minimumCleanSpeed, getWho()));
+      const setSpeed = (speed) => this.dispatch(setSpeedAction(ifplId, speed, getWho()));
+      const clearSpeed = () => this.dispatch(clearAction(ifplId, getWho()));
+      const toggleMcs = () => this.dispatch(setMcsAction(ifplId, !minimumCleanSpeed, getWho()));
 
       const callbacks = {
         setSpeed,
@@ -173,7 +173,7 @@ function speedController() {
     'md-warn': false
   };
 
-  
+
 
   $ctrl.getButtonClassForSpeed = (s) => {
     const ret = Object.assign({}, possibleClasses);

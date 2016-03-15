@@ -11,55 +11,55 @@ import {
 } from '../socket';
 
 
-function setMachAction(flightId, machReduction, who = {}) {
+function setMachAction(ifplId, machReduction, who = {}) {
   return {
     type: XMAN_SET_MACH,
-    flightId,
+    ifplId,
     machReduction,
     who
   };
 }
 
-function setSpeedAction(flightId, speed, who = {}) {
+function setSpeedAction(ifplId, speed, who = {}) {
   return {
     type: XMAN_SET_SPEED,
-    flightId,
+    ifplId,
     speed,
     who
   };
 }
 
-function setMcsAction(flightId, minimumCleanSpeed, who = {}) {
+function setMcsAction(ifplId, minimumCleanSpeed, who = {}) {
   return {
     type: XMAN_SET_MCS,
-    flightId,
+    ifplId,
     minimumCleanSpeed,
     who
   };
 }
 
-function clearActionAction(flightId, who = {}) {
+function clearActionAction(ifplId, who = {}) {
   return {
     type: XMAN_CLEAR_ACTION,
-    flightId,
+    ifplId,
     who
   };
 }
 
-export function setMach(flightId, machReduction, who) {
+export function setMach(ifplId, machReduction, who) {
   return (dispatch, getState) => {
     // Check if flight exists
-    const flight = _.find(getState().flightList.flights, f => f.flightId === flightId);
+    const flight = _.find(getState().flightList.flights, f => f.ifplId === ifplId);
 
     if(_.isEmpty(flight)) {
-      console.log(`XMAN Actions : setMach : unknown flight with id ${flightId}`);
+      console.log(`XMAN Actions : setMach : unknown flight with id ${ifplId}`);
       return;
     }
 
-    
+
 
     // Dispatch action
-    dispatch(setMachAction(flightId, machReduction, who));
+    dispatch(setMachAction(ifplId, machReduction, who));
 
 
     // Build 'status' object
@@ -71,22 +71,22 @@ export function setMach(flightId, machReduction, who) {
     };
 
     // Emit action via socket
-    sendXmanAction(flightId, status);
+    sendXmanAction(ifplId, status);
   }
 }
 
-export function setSpeed(flightId, speed, who) {
+export function setSpeed(ifplId, speed, who) {
   return (dispatch, getState) => {
     // Check if flight exists
-    const flight = _.find(getState().flightList.flights, f => f.flightId === flightId);
+    const flight = _.find(getState().flightList.flights, f => f.ifplId === ifplId);
 
     if(_.isEmpty(flight)) {
-      console.log(`XMAN Actions : setSpeed : unknown flight with id ${flightId}`);
+      console.log(`XMAN Actions : setSpeed : unknown flight with id ${ifplId}`);
       return;
     }
 
     // Dispatch action
-    dispatch(setSpeedAction(flightId, speed, who));
+    dispatch(setSpeedAction(ifplId, speed, who));
 
     // Build 'status' object
     const status = {
@@ -97,22 +97,22 @@ export function setSpeed(flightId, speed, who) {
     };
 
     // Emit action via socket
-    sendXmanAction(flightId, status);
+    sendXmanAction(ifplId, status);
   }
 }
 
-export function setMcs(flightId, mcs, who) {
+export function setMcs(ifplId, mcs, who) {
   return (dispatch, getState) => {
-    const flight = _.find(getState().flightList.flights, f => f.flightId === flightId);
+    const flight = _.find(getState().flightList.flights, f => f.ifplId === ifplId);
 
     if(_.isEmpty(flight)) {
-      console.log(`XMAN Actions : setMcs : unknown flight with id ${flightId}`);
+      console.log(`XMAN Actions : setMcs : unknown flight with id ${ifplId}`);
       return;
     }
 
 
     // Dispatch action
-    dispatch(setMcsAction(flightId, mcs, who));
+    dispatch(setMcsAction(ifplId, mcs, who));
 
     // Build 'status' object
     const status = {
@@ -123,24 +123,24 @@ export function setMcs(flightId, mcs, who) {
     };
 
     // Emit action via socket
-    sendXmanAction(flightId, status);
+    sendXmanAction(ifplId, status);
 
   }
 }
 
-export function clearAction(flightId, who) {
+export function clearAction(ifplId, who) {
   return (dispatch, getState) => {
     // Check if flight exists
-    const flight = _.find(getState().flightList.flights, f => f.flightId === flightId);
+    const flight = _.find(getState().flightList.flights, f => f.ifplId === ifplId);
 
     if(_.isEmpty(flight)) {
-      console.log(`XMAN Actions : clearAction : unknown flight with id ${flightId}`);
+      console.log(`XMAN Actions : clearAction : unknown flight with id ${ifplId}`);
       return;
     }
 
 
     // Dispatch action
-    dispatch(clearActionAction(flightId, who));
+    dispatch(clearActionAction(ifplId, who));
 
     // Build 'status' object
     const status = {
@@ -153,6 +153,6 @@ export function clearAction(flightId, who) {
     };
 
     // Emit action via socket
-    sendXmanAction(flightId, status);
+    sendXmanAction(ifplId, status);
   }
 }

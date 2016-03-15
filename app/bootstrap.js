@@ -21,7 +21,7 @@ export function bootstrap(store, $rootScope, myCwp, mySector) {
   setupSocketIo(store.dispatch, socketIo);
 
   // Do not refresh xman list here, this will be handled when the 'bound sectors event' raises
-  
+
   //console.log('Refreshing full flight list');
   //store.dispatch(refreshFullList());
 
@@ -30,6 +30,7 @@ export function bootstrap(store, $rootScope, myCwp, mySector) {
   // This needs some serious refactor, in the core
 
   const handler = $rootScope.$on('fme:new-sectors', () => {
+    console.log('DISPATCHING XMAN NEW SECTORS : ');
     store.dispatch(onSectorChange(_.get(mySector.get(), 'sectors', [])));
   });
 

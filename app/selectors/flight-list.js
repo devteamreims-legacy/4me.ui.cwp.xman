@@ -21,4 +21,4 @@ export const getQueryParams = (state) => {
 
 export const getFlights = (state) => state.flightList.flights;
 
-export const getKnownFlightIds = (state) => _.map(getFlights(state), f => f.flightId);
+export const getKnownFlightIds = (state) => _.map(getFlights(state), f => f.ifplId);
